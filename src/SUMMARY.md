@@ -1,27 +1,27 @@
-# The Rust Reference
+# Rust 参考手册
 
-[Introduction](introduction.md)
+[简介](introduction.md)
 
-- [Notation](notation.md)
+- [标记法](notation.md)
 
-- [Lexical structure](lexical-structure.md)
-    - [Input format](input-format.md)
-    - [Keywords](keywords.md)
-    - [Identifiers](identifiers.md)
-    - [Comments](comments.md)
-    - [Whitespace](whitespace.md)
-    - [Tokens](tokens.md)
+- [词法结构](lexical-structure.md)
+    - [输入格式](input-format.md)
+    - [关键字](keywords.md)
+    - [标识符](identifiers.md)
+    - [注释](comments.md)
+    - [空格](whitespace.md)
+    - [记号](tokens.md)
 
-- [Macros](macros.md)
-    - [Macros By Example](macros-by-example.md)
-    - [Procedural Macros](procedural-macros.md)
+- [宏](macros.md)
+    - [声明宏](macros-by-example.md)
+    - [过程宏](procedural-macros.md)
 
-- [Crates and source files](crates-and-source-files.md)
+- [crate 和源文件](crates-and-source-files.md)
 
-- [Conditional compilation](conditional-compilation.md)
+- [条件编译](conditional-compilation.md)
 
-- [Items](items.md)
-    - [Modules](items/modules.md)
+- [项](items.md)
+    - [模块](items/modules.md)
     - [Extern crates](items/extern-crates.md)
     - [Use declarations](items/use-declarations.md)
     - [Functions](items/functions.md)

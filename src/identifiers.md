@@ -1,40 +1,31 @@
-# Identifiers
+# 标识符
 
 > **<sup>Lexer:<sup>**\
-> IDENTIFIER_OR_KEYWORD :\
-> &nbsp;&nbsp; &nbsp;&nbsp; XID_start XID_continue<sup>\*</sup>\
-> &nbsp;&nbsp; | `_` XID_continue<sup>+</sup>
+> 标识符_或_关键字：\
+> &nbsp;&nbsp; &nbsp;&nbsp; [`a`-`z` `A`-`Z`]&nbsp;[`a`-`z` `A`-`Z` `0`-`9` `_`]<sup>\*</sup>\
+> &nbsp;&nbsp; | `_` [`a`-`z` `A`-`Z` `0`-`9` `_`]<sup>+</sup>
 >
-> RAW_IDENTIFIER : `r#` IDENTIFIER_OR_KEYWORD <sub>*Except `crate`, `self`, `super`, `Self`*</sub>
+> RAW_IDENTIFIER <sup><strong>译否？</strong></sup> : `r#` IDENTIFIER_OR_KEYWORD <sup><strong>译否？</strong></sup> <sub>*除外：`crate`, `self`, `super`, `Self`*</sub>
 >
-> NON_KEYWORD_IDENTIFIER : IDENTIFIER_OR_KEYWORD <sub>*Except a [strict] or [reserved] keyword*</sub>
+> NON_KEYWORD_IDENTIFIER <sup><strong>译否？</strong></sup> : IDENTIFIER_OR_KEYWORD <sup><strong>译否？</strong></sup> <sub>*除外：[规定关键字]或[保留关键字]*</sub>
 >
-> IDENTIFIER :\
-> NON_KEYWORD_IDENTIFIER | RAW_IDENTIFIER
+> IDENTIFIER <sup><strong>译否？</strong></sup> :\
+> NON_KEYWORD_IDENTIFIER <sup><strong>译否？</strong></sup> | RAW_IDENTIFIER <sup><strong>译否？</strong></sup>
 
-An identifier is any nonempty Unicode string of the following form:
+标识符是如下形式的任何非空 ASCII 字符串：
 
-Either
+要么是——
 
-* The first character has property [`XID_start`].
-* The remaining characters have property [`XID_continue`].
+* 首字符是字母。
+* 其余字符是字母、数字，或 `_`。
 
-Or
+要么是——
 
-* The first character is `_`.
-* The identifier is more than one character. `_` alone is not an identifier.
-* The remaining characters have property [`XID_continue`].
+* 首字符是 `_`。
+* 标识符由多个字符组成，单个 `_` 不是有效标识符。
+* 其余字符是字母、数字，或 `_`。
 
-> **Note**: [`XID_start`] and [`XID_continue`] as character properties cover the
-> character ranges used to form the more familiar C and Java language-family
-> identifiers.
+原生标识符类似于普通标识符，但前缀是 `r#`（注意 `r#` 不包括在实际标识符中）。原生标识符与普通标识符的区别是：原生标识符可以是除上述列举的 `RAW_IDENTIFIER` 外的任何规定关键字或保留关键字。
 
-A raw identifier is like a normal identifier, but prefixed by `r#`. (Note that
-the `r#` prefix is not included as part of the actual identifier.)
-Unlike a normal identifier, a raw identifier may be any strict or reserved
-keyword except the ones listed above for `RAW_IDENTIFIER`.
-
-[strict]: keywords.md#strict-keywords
-[reserved]: keywords.md#reserved-keywords
-[`XID_start`]:  http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%3AXID_Start%3A%5D&abb=on&g=&i=
-[`XID_continue`]: http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%3AXID_Continue%3A%5D&abb=on&g=&i=
+[规定关键字]: keywords.md#strict-keywords
+[保留关键字]: keywords.md#reserved-keywords

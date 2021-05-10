@@ -1,4 +1,14 @@
-# Introduction
+# 简介
+
+> 中文翻译注（Chinese translation of the [The Rust Reference][book-website]）：<br>
+> 1. 《Rust 参考手册》(The Rust Reference 中文版) 翻译自 [The Rust Reference][book-website]，查看此书的 [Github 翻译项目][book-cn]。
+> 2. 本书已有由 [zzy 翻译的部分章节版本](https://github.com/zzy/rust-reference-zh-cn)，Rust 中文翻译项目组将采用 zzy 版翻译好的内容，后续将跟随 Rust 官方的英文版本更新。
+> 3. 许可协议：跟随英文原书使用 MIT 和 Apache 2.0 双许可授权。
+> 4. <a href="https://rustwiki.org/zh-CN/reference" style="color:red;">本站支持文档中英文切换</a>，点击页面右上角语言图标可切换到相同章节的英文页面。
+> 5. 若发现本页表达错误或帮助我们改进翻译，可点击右上角的编辑按钮打开本页对应源码文件进行编辑和修改，Rust 中文资源的开源组织发展离不开大家，感谢您的支持和帮助！
+
+[book-website]: https://doc.rust-lang.org/reference
+[book-cn]: https://github.com/rust-lang-cn/reference-cn
 
 This book is the primary reference for the Rust programming language.
 It provides three kinds of material:

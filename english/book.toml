@@ -1,10 +1,10 @@
 [book]
 title = "The Rust Reference"
 author = "The Rust Project Developers"
-translator = "rust-lang-cn, zzy"
 
 [output.html]
 additional-css = ["theme/reference.css"]
+additional-js = ["language.js"]
 git-repository-url = "https://github.com/rust-lang/reference/"
 
 [output.html.redirect]

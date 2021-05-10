@@ -1,28 +1,36 @@
-# Comments
+# 注释
 
 > **<sup>Lexer</sup>**\
-> LINE_COMMENT :\
-> &nbsp;&nbsp; &nbsp;&nbsp; `//` (~\[`/` `!`] | `//`) ~`\n`<sup>\*</sup>\
+> 行注释：\
+> &nbsp;&nbsp; &nbsp;&nbsp; `//` (~[`/` `!`] | `//`) ~`\n`<sup>\*</sup>\
 > &nbsp;&nbsp; | `//`
 >
-> BLOCK_COMMENT :\
-> &nbsp;&nbsp; &nbsp;&nbsp; `/*` (~\[`*` `!`] | `**` | _BlockCommentOrDoc_)
+> 块注释：\
+> &nbsp;&nbsp; &nbsp;&nbsp; `/*` (~[`*` `!`] | `**` | _BlockCommentOrDoc_)
 >      (_BlockCommentOrDoc_ | ~`*/`)<sup>\*</sup> `*/`\
 > &nbsp;&nbsp; | `/**/`\
 > &nbsp;&nbsp; | `/***/`
 >
-> INNER_LINE_DOC :\
-> &nbsp;&nbsp; `//!` ~\[`\n` _IsolatedCR_]<sup>\*</sup>
+> 内部行文档注释：
+> > *译者注*：此风格文档注释包含注释的项，而不是为注释之后的项增加文档。这通常用于 crate 根文件（通常是 src/lib.rs）或模块的根文件为 crate 或模块整体提供文档。
+> 
+> &nbsp;&nbsp; `//!` ~[`\n` _IsolatedCR_]<sup>\*</sup>
 >
-> INNER_BLOCK_DOC :\
-> &nbsp;&nbsp; `/*!` ( _BlockCommentOrDoc_ | ~\[`*/` _IsolatedCR_] )<sup>\*</sup> `*/`
+> 内部块文档注释：
+> > *译者注*：此风格文档注释包含注释的项，而不是为注释之后的项增加文档。这通常用于 crate 根文件（通常是 src/lib.rs）或模块的根文件为 crate 或模块整体提供文档。
+> 
+> &nbsp;&nbsp; `/*!` ( _BlockCommentOrDoc_ | ~[`*/` _IsolatedCR_] )<sup>\*</sup> `*/`
 >
-> OUTER_LINE_DOC :\
-> &nbsp;&nbsp; `///` (~`/` ~\[`\n` _IsolatedCR_]<sup>\*</sup>)<sup>?</sup>
+> 外部行文档注释：
+> > *译者注*：此风格文档注释位于需要文档的项之前，为注释之后的项增加文档。
+> 
+> &nbsp;&nbsp; `///` (~`/` ~[`\n` _IsolatedCR_]<sup>\*</sup>)<sup>?</sup>
 >
-> OUTER_BLOCK_DOC :\
+> 外部块文档注释：
+> > *译者注*：此风格文档注释位于需要文档的项之前，为注释之后的项增加文档。
+> 
 > &nbsp;&nbsp; `/**` (~`*` | _BlockCommentOrDoc_ )
->              (_BlockCommentOrDoc_ | ~\[`*/` _IsolatedCR_])<sup>\*</sup> `*/`
+>              (_BlockCommentOrDoc_ | ~[`*/` _IsolatedCR_])<sup>\*</sup> `*/`
 >
 > _BlockCommentOrDoc_ :\
 > &nbsp;&nbsp; &nbsp;&nbsp; BLOCK_COMMENT\
@@ -32,31 +40,22 @@
 > _IsolatedCR_ :\
 > &nbsp;&nbsp; _A `\r` not followed by a `\n`_
 
-## Non-doc comments
+## 非文档注释
 
-Comments in Rust code follow the general C++ style of line (`//`) and
-block (`/* ... */`) comment forms. Nested block comments are supported.
+Rust 代码中的注释大体上遵循 C++ 风格的行（`//`）和块（`/* ... */`）注释形式，嵌套块注释也被支持。
 
-Non-doc comments are interpreted as a form of whitespace.
+非文档注释被当作空白的形式解析。
 
-## Doc comments
+## 文档注释
 
-Line doc comments beginning with exactly _three_ slashes (`///`), and block
-doc comments (`/** ... */`), both inner doc comments, are interpreted as a
-special syntax for [`doc` attributes]. That is, they are equivalent to writing
-`#[doc="..."]` around the body of the comment, i.e., `/// Foo` turns into
-`#[doc="Foo"]` and `/** Bar */` turns into `#[doc="Bar"]`.
+以 *三个斜线（`///`）* 开始的行文档注释，以及以 *一个斜线和两个星号（`/** ... */`）* 开始的块文档注释，均为内部文档注释。它们被作为 [`doc` 属性]的一个特殊语法解析。也就是说，它们等同于在注释体周围写上 `#[doc="..."]`。例如：`/// Foo` 等同于
+`#[doc="Foo"]`，`/** Bar */` 等同于 `#[doc="Bar"]`。
 
-Line comments beginning with `//!` and block comments `/*! ... */` are
-doc comments that apply to the parent of the comment, rather than the item
-that follows.  That is, they are equivalent to writing `#![doc="..."]` around
-the body of the comment. `//!` comments are usually used to document
-modules that occupy a source file.
+以 `//!` 开始的行注释，以及以 `/*! ... */` 开始的块注释，是应用于注释体的父对象的文档注释，而非注释体之后的项。也就是说，它们等同于在注释体周围写上 `#![doc="..."]`。`//!` 注释通常用于说明源文件中的模块。
 
-Isolated CRs (`\r`), i.e. not followed by LF (`\n`), are not allowed in doc
-comments.
+孤立的 CRs（`\r`）——譬如其后无 LF（`\n`），在文档注释中是不被允许的。
 
-## Examples
+## 示例
 
 ```rust
 //! A doc comment that applies to the implicit anonymous module of this crate
@@ -122,4 +121,4 @@ pub mod outer_module {
 }
 ```
 
-[`doc` attributes]: ../rustdoc/the-doc-attribute.html
+[`doc` 属性]: attributes.md

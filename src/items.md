@@ -1,4 +1,4 @@
-# Items
+# 项
 
 > **<sup>Syntax:<sup>**\
 > _Item_:\
@@ -22,46 +22,35 @@
 > &nbsp;&nbsp; &nbsp;&nbsp; | [_Trait_]\
 > &nbsp;&nbsp; &nbsp;&nbsp; | [_Implementation_]\
 > &nbsp;&nbsp; &nbsp;&nbsp; | [_ExternBlock_]\
-> &nbsp;&nbsp; )
+> &nbsp;&nbsp; )`
 >
 > _MacroItem_:\
 > &nbsp;&nbsp; &nbsp;&nbsp; [_MacroInvocationSemi_]\
 > &nbsp;&nbsp; | [_MacroRulesDefinition_]
 
+_项（item）_ 是 crate 的一个组件。项在 crate 中被组织为一个嵌套的[模块][modules]集。每个 crate 都有一个单独的“最外层”的匿名模块；crate 中的所有其它项，在 crate 中的模块树中都有路径。
 
-An _item_ is a component of a crate. Items are organized within a crate by a
-nested set of [modules]. Every crate has a single "outermost" anonymous module;
-all further items within the crate have [paths] within the module tree of the
-crate.
+项全部在编译时被确定，大部分在执行期间保持不变，并可能驻留在只读内存中。
 
-Items are entirely determined at compile-time, generally remain fixed during
-execution, and may reside in read-only memory.
+项有以下几种类型：
 
-There are several kinds of items:
+* [模块][modules]
+* [extern crate 声明][`extern crate` declarations]
+* [use 声明][`use` declarations]
+* [函数定义][function definitions]
+* [类型定义][type definitions]
+* [结构体定义][struct definitions]
+* [枚举定义][enumeration definitions]
+* [联合体定义][union definitions]
+* [常量项][constant items]
+* [静态项][static items]
+* [trait 定义][trait definitions]
+* [实现][implementations]
+* [`外部`块][`extern` blocks]
 
-* [modules]
-* [`extern crate` declarations]
-* [`use` declarations]
-* [function definitions]
-* [type definitions]
-* [struct definitions]
-* [enumeration definitions]
-* [union definitions]
-* [constant items]
-* [static items]
-* [trait definitions]
-* [implementations]
-* [`extern` blocks]
+这些范围内的项与定义在作用域外声明的项是一样的--它仍是一个静态项--除了那些位于模块命名空间中的路径名称由包含其中的项的名字定义的项，或者是其包含的私有项（对于函数来说）。
 
-Some items form an implicit scope for the declaration of sub-items. In other
-words, within a function or module, declarations of items can (in many cases)
-be mixed with the statements, control blocks, and similar artifacts that
-otherwise compose the item body. The meaning of these scoped items is the same
-as if the item was declared outside the scope &mdash; it is still a static item
-&mdash; except that the item's *path name* within the module namespace is
-qualified by the name of the enclosing item, or is private to the enclosing
-item (in the case of functions). The grammar specifies the exact locations in
-which sub-item declarations may appear.
+有些项组成了子项声明的隐式作用域。换句话说，在一个函数或模块中，项的声明可以（在许多情况下）与语句、控制块和类似的构件混合在一起，否则这些构件将构成项体。这些作用域内的项的含义与在作用域外声明的项的含义相同——它仍然是静态项——只是模块命名空间中的项的 *路径名* 由包含该项的封闭项名称限定，或者是包含该项的封闭项的私有项（对于函数来说）。由语法指定子项声明可能出现的确切位置。
 
 [_ConstantItem_]: items/constant-items.md
 [_Enumeration_]: items/enumerations.md

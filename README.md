@@ -1,6 +1,18 @@
-# The Rust Language Reference
+# Rust 参考手册
 
 ![Build Status](https://github.com/rust-lang-cn/reference-cn/workflows/CI/badge.svg)
+
+> Chinese Translation of The Rust Language Reference
+>
+> 
+
+> Chinese translation of [The Rust Language Reference][github-en]<br>
+> 鉴于目前网上的中文版已经滞后英文内容，所以重新开启本书翻译，跟进原书。<br>
+>
+> 本仓库翻译内容包括 Rust 中文翻译项目组本身的翻译以及采用网上已有的开源的翻译版本（如：[zzy/rust-reference-cn][zzy] 译本），我们尽可能避免不必要的重复劳动，我们对原译者感激不尽！
+
+[github-en]: https://github.com/rust-lang/reference
+[zzy]: https://github.com/zzy/rust-reference-zh-cn
 
 This document is the primary reference for the Rust programming language.
 

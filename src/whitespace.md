@@ -1,24 +1,19 @@
-# Whitespace
+# 空白
 
-Whitespace is any non-empty string containing only characters that have the
-[`Pattern_White_Space`] Unicode property, namely:
+空白是任何仅具有 `Pattern_White_Space` Unicode 属性的非空字符串，也就是：
 
-- `U+0009` (horizontal tab, `'\t'`)
-- `U+000A` (line feed, `'\n'`)
-- `U+000B` (vertical tab)
-- `U+000C` (form feed)
-- `U+000D` (carriage return, `'\r'`)
-- `U+0020` (space, `' '`)
-- `U+0085` (next line)
-- `U+200E` (left-to-right mark)
-- `U+200F` (right-to-left mark)
-- `U+2028` (line separator)
-- `U+2029` (paragraph separator)
+- `U+0009` （水平制表符，`'\t'`）
+- `U+000A` （换行符，`'\n'`）
+- `U+000B` （垂直制表符）
+- `U+000C` （分页符）
+- `U+000D` （回车符，`'\r'`）
+- `U+0020` （空格符，`' '`）
+- `U+0085` （下移符）
+- `U+200E` （自左向右符）
+- `U+200F` （自右向左符）
+- `U+2028` （行分隔符）
+- `U+2029` （段落分隔符）
 
-Rust is a "free-form" language, meaning that all forms of whitespace serve only
-to separate _tokens_ in the grammar, and have no semantic significance.
+Rust 是一个“形式自由”的语言，这意味着任何形式的空白仅用来分隔语法中_记号_，并无语义意义。
 
-A Rust program has identical meaning if each whitespace element is replaced
-with any other legal whitespace element, such as a single space character.
-
-[`Pattern_White_Space`]: https://www.unicode.org/reports/tr31/
+Rust 程序中，如果每个空白元素被替换为任何合法的其它空格元素（如单个空格字符），则它们仍有相同的意义。

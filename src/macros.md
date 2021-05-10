@@ -1,15 +1,13 @@
-# Macros
+# 宏
 
-The functionality and syntax of Rust can be extended with custom definitions
-called macros. They are given names, and invoked through a consistent
-syntax: `some_extension!(...)`.
+Rust 语言的功能和语法可以通过自定义宏进行扩展。宏可以被命名，可通过一致的语法调用：`some_extension!(...)`。
 
-There are two ways to define new macros:
+定义新宏有两种方式：
 
-* [Macros by Example] define new syntax in a higher-level, declarative way.
-* [Procedural Macros] can be used to implement custom derive.
+* [声明宏][Macros by Example]以更高级别的声明性方式定义新语法。
+* [过程宏][Procedural Macros]可用于实现自定义派生。
 
-## Macro Invocation
+## 宏调用
 
 > **<sup>Syntax</sup>**\
 > _MacroInvocation_ :\
@@ -28,21 +26,16 @@ There are two ways to define new macros:
 > &nbsp;&nbsp; | [_SimplePath_] `!` `[` _TokenTree_<sup>\*</sup> `]` `;`\
 > &nbsp;&nbsp; | [_SimplePath_] `!` `{` _TokenTree_<sup>\*</sup> `}`
 
-A macro invocation executes a macro at compile time and replaces the
-invocation with the result of the macro. Macros may be invoked in the
-following situations:
+宏调用在编译时执行宏，并用执行结果替换调用。可以在下述情况中调用宏：
 
-* [Expressions] and [statements]
-* [Patterns]
-* [Types]
-* [Items] including [associated items]
-* [`macro_rules`] transcribers
-* [External blocks]
+* [表达式][Expressions]和[语句][statements]
+* [模式][Patterns]
+* [类型][Types]
+* [项][Items]以及[关联项][associated items]
+* [`声明宏`][`macro_rules`]转换
+* [外部块][External blocks]
 
-When used as an item or a statement, the _MacroInvocationSemi_ form is used
-where a semicolon is required at the end when not using curly braces.
-[Visibility qualifiers] are never allowed before a macro invocation or
-[`macro_rules`] definition.
+当用作项或语句时，_MacroInvocationSemi_ 形式被使用。_MacroInvocationSemi_ 形式中，如果不使用大括号，则在结尾处需要分号。在宏调用或[`声明宏`][`macro_rules`]定义之前，不允许使用[可见性限定符][Visibility qualifiers]。 
 
 ```rust
 // Used as an expression.
