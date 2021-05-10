@@ -1,6 +1,6 @@
 # The Rust Language Reference
 
-![Build Status](https://github.com/rust-lang-cn/book-cn/workflows/CI/badge.svg)
+![Build Status](https://github.com/rust-lang-cn/reference-cn/workflows/CI/badge.svg)
 
 This document is the primary reference for the Rust programming language.
 
