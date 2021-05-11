@@ -147,7 +147,7 @@ struct Struct {
 
 ### 属性宏
 
-*属性宏* 定义可以附加到[项][items]的新[外部属性][attributes]，包括[`外部`块][`extern` blocks]中的项、内置和 trait 
+*属性宏* 定义可以附加到[项][items]的新[外部属性][attributes]，包括[`外部`块][`extern` blocks]中的项、内置和 trait
 [实现][implementations]，以及 [trait 定义][trait definitions]。
 
 属性宏由带有

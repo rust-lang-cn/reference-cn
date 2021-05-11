@@ -2,8 +2,8 @@
 
 > **<sup>Lexer:<sup>**\
 > 标识符_或_关键字：\
-> &nbsp;&nbsp; &nbsp;&nbsp; [`a`-`z` `A`-`Z`]&nbsp;[`a`-`z` `A`-`Z` `0`-`9` `_`]<sup>\*</sup>\
-> &nbsp;&nbsp; | `_` [`a`-`z` `A`-`Z` `0`-`9` `_`]<sup>+</sup>
+> &nbsp;&nbsp; &nbsp;&nbsp; \[`a`-`z` `A`-`Z`]&nbsp;\[`a`-`z` `A`-`Z` `0`-`9` `_`]<sup>\*</sup>\
+> &nbsp;&nbsp; | `_` \[`a`-`z` `A`-`Z` `0`-`9` `_`]<sup>+</sup>
 >
 > RAW_IDENTIFIER <sup><strong>译否？</strong></sup> : `r#` IDENTIFIER_OR_KEYWORD <sup><strong>译否？</strong></sup> <sub>*除外：`crate`, `self`, `super`, `Self`*</sub>
 >

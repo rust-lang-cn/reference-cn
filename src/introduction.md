@@ -152,3 +152,7 @@ We also want the reference to be as normative as possible, so if you see anythin
 [rustc book]: ../rustc/index.html
 [Notation]: notation.md
 [Zulip]: https://rust-lang.zulipchat.com/#narrow/stream/237824-t-lang.2Fdoc
+
+<script>
+  var default_homepage_md = "introduction.md";
+</script>

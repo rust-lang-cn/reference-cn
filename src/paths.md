@@ -278,7 +278,7 @@ macro_rules! inc {
 
 模块的路径前缀是该模块的规范路径。对于裸实现，被实现的项的规范路径使用<span class="parenthetical">尖括号（`<>`）</span> 包围。对于 [trait 实现][trait implementations]，在被实现的项的规范路径后面，首先跟随 `as`，然后再跟随 trait 的规范路径，整个规范路径都使用<span class="parenthetical">尖括号（`<>`）</span> 包围。
 
-规范路径只有在给定的 crate 中才有意义。不同 crate 之间没有全局的命名空间；项的规范路也径仅在其 crate 中可标识。 
+规范路径只有在给定的 crate 中才有意义。不同 crate 之间没有全局的命名空间；项的规范路也径仅在其 crate 中可标识。
 
 ```rust
 // Comments show the canonical path of the item.

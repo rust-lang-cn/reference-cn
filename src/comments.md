@@ -2,35 +2,35 @@
 
 > **<sup>Lexer</sup>**\
 > 行注释：\
-> &nbsp;&nbsp; &nbsp;&nbsp; `//` (~[`/` `!`] | `//`) ~`\n`<sup>\*</sup>\
+> &nbsp;&nbsp; &nbsp;&nbsp; `//` (~\[`/` `!`] | `//`) ~`\n`<sup>\*</sup>\
 > &nbsp;&nbsp; | `//`
 >
 > 块注释：\
-> &nbsp;&nbsp; &nbsp;&nbsp; `/*` (~[`*` `!`] | `**` | _BlockCommentOrDoc_)
+> &nbsp;&nbsp; &nbsp;&nbsp; `/*` (~\[`*` `!`] | `**` | _BlockCommentOrDoc_)
 >      (_BlockCommentOrDoc_ | ~`*/`)<sup>\*</sup> `*/`\
 > &nbsp;&nbsp; | `/**/`\
 > &nbsp;&nbsp; | `/***/`
 >
 > 内部行文档注释：
 > > *译者注*：此风格文档注释包含注释的项，而不是为注释之后的项增加文档。这通常用于 crate 根文件（通常是 src/lib.rs）或模块的根文件为 crate 或模块整体提供文档。
-> 
-> &nbsp;&nbsp; `//!` ~[`\n` _IsolatedCR_]<sup>\*</sup>
+>
+> &nbsp;&nbsp; `//!` ~\[`\n` _IsolatedCR_]<sup>\*</sup>
 >
 > 内部块文档注释：
 > > *译者注*：此风格文档注释包含注释的项，而不是为注释之后的项增加文档。这通常用于 crate 根文件（通常是 src/lib.rs）或模块的根文件为 crate 或模块整体提供文档。
-> 
-> &nbsp;&nbsp; `/*!` ( _BlockCommentOrDoc_ | ~[`*/` _IsolatedCR_] )<sup>\*</sup> `*/`
+>
+> &nbsp;&nbsp; `/*!` ( _BlockCommentOrDoc_ | ~\[`*/` _IsolatedCR_] )<sup>\*</sup> `*/`
 >
 > 外部行文档注释：
 > > *译者注*：此风格文档注释位于需要文档的项之前，为注释之后的项增加文档。
-> 
-> &nbsp;&nbsp; `///` (~`/` ~[`\n` _IsolatedCR_]<sup>\*</sup>)<sup>?</sup>
+>
+> &nbsp;&nbsp; `///` (~`/` ~\[`\n` _IsolatedCR_]<sup>\*</sup>)<sup>?</sup>
 >
 > 外部块文档注释：
 > > *译者注*：此风格文档注释位于需要文档的项之前，为注释之后的项增加文档。
-> 
+>
 > &nbsp;&nbsp; `/**` (~`*` | _BlockCommentOrDoc_ )
->              (_BlockCommentOrDoc_ | ~[`*/` _IsolatedCR_])<sup>\*</sup> `*/`
+>              (_BlockCommentOrDoc_ | ~\[`*/` _IsolatedCR_])<sup>\*</sup> `*/`
 >
 > _BlockCommentOrDoc_ :\
 > &nbsp;&nbsp; &nbsp;&nbsp; BLOCK_COMMENT\
