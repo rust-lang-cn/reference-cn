@@ -7,3 +7,4 @@ translator = "rust-lang-cn, zzy"
 additional-css = ["theme/reference.css"]
 additional-js = ["language.js"]
 git-repository-url = "https://github.com/rust-lang-cn/reference-cn"
+edit-url-template = "https://github.com/rust-lang-cn/reference-cn/edit/master/{path}"
