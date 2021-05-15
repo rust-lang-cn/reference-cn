@@ -1,6 +1,10 @@
 # Rust 参考手册
 
 ![Build Status](https://github.com/rust-lang-cn/reference-cn/workflows/CI/badge.svg)
+[![LICENSE-MIT](https://img.shields.io/badge/license-MIT-green)](https://raw.githubusercontent.com/rust-lang-cn/reference-cn/master/LICENSE-MIT)
+[![LICENSE-APACHE](https://img.shields.io/badge/license-Apache%202-blue)](https://raw.githubusercontent.com/rust-lang-cn/reference-cn/master/LICENSE-APACHE)
+![GitHub last commit](https://img.shields.io/github/last-commit/rust-lang-cn/reference-cn?color=gold)
+![rustwiki.org](https://img.shields.io/website?up_message=rustwiki.org&url=https%3A%2F%2Frustwiki.org)
 
 > Chinese Translation of The Rust Language Reference
 >
