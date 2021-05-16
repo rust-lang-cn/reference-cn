@@ -4,7 +4,8 @@
 [![LICENSE-MIT](https://img.shields.io/badge/license-MIT-green)](https://raw.githubusercontent.com/rust-lang-cn/reference-cn/master/LICENSE-MIT)
 [![LICENSE-APACHE](https://img.shields.io/badge/license-Apache%202-blue)](https://raw.githubusercontent.com/rust-lang-cn/reference-cn/master/LICENSE-APACHE)
 ![GitHub last commit](https://img.shields.io/github/last-commit/rust-lang-cn/reference-cn?color=gold)
-![rustwiki.org](https://img.shields.io/website?up_message=rustwiki.org&url=https%3A%2F%2Frustwiki.org)
+![Locatized 100%](https://img.shields.io/badge/localized-100%25-purple)
+[![rustwiki.org](https://img.shields.io/website?up_message=rustwiki.org&url=https%3A%2F%2Frustwiki.org)](https://rustwiki.org)
 
 > Chinese translation of [The Rust Language Reference][github-en]
 > 
@@ -19,14 +20,6 @@
 [minstrel]: https://gitee.com/minstrel1977
 [full-version]: https://gitee.com/minstrel1977/rust-reference
 [mulan]: https://license.coscl.org.cn/MulanPSL2/
-
-This document is the primary reference for the Rust programming language.
-
-This document is not normative. It may include details that are specific
-to `rustc` itself, and should not be taken as a specification for the
-Rust language. We intend to produce such a document someday, but this is
-what we have for now.
-
 
 本文档是 Rust 编程语言的主要参考。
 
