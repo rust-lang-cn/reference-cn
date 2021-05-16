@@ -27,10 +27,6 @@
 
 ## 依赖
 
-- rustc (the Rust compiler).
-- mdbook (use `cargo install mdbook` to install it).
-- rust nightly (you would be required to set your Rust version to the nightly version to make sure all tests pass)
-
 - rustc（Rust编译器）。
 - mdbook（用于 `cargo install mdbook` 来安装）。
 - rust nightly 版（需要将 Rust 版本设置为 nightly 版本，以确保所有测试均通过）。
