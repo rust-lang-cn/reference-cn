@@ -68,7 +68,7 @@ mod m {
 token `::` 必须在泛型参数的左尖括号（`<`）的前面，以避免和小于号操作符产生混淆。这就是俗称的“涡轮鱼(turbofish)”句法。
 
 ```rust
-(0..10).collect::<Vec<_>>();net
+(0..10).collect::<Vec<_>>();
 Vec::<u8>::with_capacity(1024);
 ```
 
@@ -99,9 +99,18 @@ trait T1 {
     fn f() { println!("T1 f"); }
 }
 impl T1 for S {}
-trait T2 {net
+trait T2 {
     fn f() { println!("T2 f"); }
-}net
+}
+impl T2 for S {}
+S::f();  // Calls the inherent impl.
+<S as T1>::f();  // Calls the T1 trait function.
+<S as T2>::f();  // Calls the T2 trait function.
+```
+
+### 类型中的路径
+
+> **<sup>Syntax</sup>**\
 > _TypePath_ :\
 > &nbsp;&nbsp; `::`<sup>?</sup> _TypePathSegment_ (`::` _TypePathSegment_)<sup>\*</sup>
 >
