@@ -11,6 +11,14 @@ macro_rules! style_error {
     };
 }
 
+macro_rules! line_error {
+    ($bad:expr, $path:expr, $lineno:expr, $($arg:tt)*) => {
+        *$bad = true;
+        eprint!("error in {} (line {}): ", $path.display(), $lineno);
+        eprintln!("{}", format_args!($($arg)*));
+    };
+}
+
 fn main() {
     let arg = env::args().nth(1).unwrap_or_else(|| {
         eprintln!("Please pass a src directory as the first argument");
@@ -64,9 +72,9 @@ fn check_directory(dir: &Path, bad: &mut bool) -> Result<(), Box<dyn Error>> {
         if !contents.ends_with('\n') {
             style_error!(bad, path, "file must end with a newline");
         }
-        for line in contents.lines() {
+        for (num, line) in contents.lines().enumerate() {
             if line.ends_with(' ') {
-                style_error!(bad, path, "lines must not end with spaces");
+                line_error!(bad, path, num + 1, "lines must not end with spaces");                
             }
         }
         cmark_check(&path, bad, &contents)?;
