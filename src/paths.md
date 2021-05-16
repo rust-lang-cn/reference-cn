@@ -152,7 +152,7 @@ type G = std::boxed::Box<dyn std::ops::FnOnce(isize) -> isize>;
 以 `::` 开头的路径被认为是全局路径，其中的路径首段在不同的版本中的解析方式有所不同。但路径中的每个标识符都必须解析为一个程序项。
 
 > **版本差异**: 在2015版中，标识符解析从“create 根模块(crate root)”（2018版中表示为 `crate::`）开始，“create 根模块(crate root)”中包含了一系列不同的程序项，包括外部crate、默认create（如 `std` 或 `core`），以及 crate下的各种顶层程序项（包括 `use`导入）。
-> 
+>
 >从 2018 版开始，以 `::` 开头的路径被解析为[外部预导入包][extern prelude]中的一个 crate。也就是说，其后必须跟一个 crate的名称。
 
 ```rust

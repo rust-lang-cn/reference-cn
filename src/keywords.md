@@ -97,14 +97,14 @@ Rust 将关键字分为三类：
 * `macro_rules` 用于创建自定义[宏][macros]。
 * `union` 用于声明[联合体(`union`)][union]，它只有在联合体声明中使用时才是关键字。
 * `'static` 用于静态生存期，不能用作通用[泛型生存期参数][generic lifetime parameter]和[循环标签][loop label]
-  
+
   ```compile_fail
   // error[E0262]: invalid lifetime parameter name: `'static`
   fn invalid_lifetime_parameter<'static>(s: &'static str) -> &'static str { s }
   ```
 * 在 2015 版本中，当 [`dyn`] 用在非 `::` 开头的路径限定的类型前时，它是关键字。
-  
-  从 2018 版开始，`dyn` 被提升为一个严格关键字。
+
+从 2018 版开始，`dyn` 被提升为一个严格关键字。
 
 > **<sup>词法分析</sup>**\
 > KW_UNION          : `union`\

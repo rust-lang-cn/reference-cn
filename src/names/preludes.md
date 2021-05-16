@@ -27,7 +27,7 @@
 [`core`] crate 总是会被添加到外部预导入包中。只要 [`no_std`属性][`no_std` attribute]没有在 crate根模块中指定，那么[`std`] crate 就会被添加进来
 
 > **版本差异**：在 2015 版中，在外部预导入包中的 crate 不能通过 [use声明][use declarations]来直接引用，因此通常标准做法是用 `extern crate` 将那它们纳入到当前作用域。
-> 
+>
 > 从 2018 版开始， [use声明][use declarations]可以直接引用外部预导入包里的 crate，所以再在代码里使用 `extern crate` 就会被认为是不规范的。
 
 > **注意**: 随 `rustc` 一起引入的 crate，如 [`alloc`] 和 [`test`]，在使用 Cargo 时不会自动被包含在 `--extern` 命令行参数选项中。即使在 2018 版中，也必须通过外部crate(`extern crate`)声明来把它们引入到当前作用域内。
@@ -38,7 +38,7 @@
 > ```
 >
 > Cargo却会将 `proc_macro` 带入到编译类型为 proc-macro 的 crate 的外部预导入包中
-> 
+>
 <!--
 查看 https://github.com/rust-lang/rust/issues/57288 以了解更多关于 alloc/test 的限制。
 -->
