@@ -437,7 +437,7 @@ assert_eq!(std::mem::size_of::<Enum16>(), 4);
 
 [^译注1]: 至此，上一个字段就填充完成，开始计算本字段了。也就是说每一个字段的偏移量是其字段的段首位置；那第一个字段的偏移量就始终为 0。
 
-[^译注2]: 这里合法的意思是变体的判别值受 `repr(u8)` 这样的表形属性约束，像这个例子中，变体的判别值就只能位于 0~255 之间。 
+[^译注2]: 这里合法的意思是变体的判别值受 `repr(u8)` 这样的表形属性约束，像这个例子中，变体的判别值就只能位于 0~255 之间。
 
 [`align_of_val`]: https://doc.rust-lang.org/std/mem/fn.align_of_val.html
 [`size_of_val`]: https://doc.rust-lang.org/std/mem/fn.size_of_val.html

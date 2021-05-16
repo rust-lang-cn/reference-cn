@@ -106,7 +106,7 @@ Each of the three sets is made up of tokens. FIRST(M) and LAST(M) may also conta
 我们使用简写的 ANYTOKEN 来表示所有 token（包括简单NT）的集合。例如，如果任何 token 在匹配器 M 之后都是合法的，那么 FOLLOW(M) = ANYTOKEN。
 We use the shorthand ANYTOKEN to denote the set of all tokens (including simple NTs). For example, if any token is legal after a matcher M, then FOLLOW(M) = ANYTOKEN.
 
-（为了加深对上述非正式定义描述的理解，读者在阅读正式定义之前，可以先在这里读一遍后面 [关于 FIRST 和 LAST 的示例](#examples-of FIRST -and- LAST)。）
+（为了加深对上述非正式定义描述的理解，读者在阅读正式定义之前，可以先在这里读一遍后面 [关于 FIRST 和 LAST 的示例](#examples-of-first-and-last)。）
 (To review one's understanding of the above informal descriptions, the reader at this point may want to jump ahead to the [examples of FIRST/LAST](#examples-of-first-and-last) before reading their formal definitions.)
 
 ### FIRST, LAST

@@ -68,7 +68,7 @@ For example, `2 + (3 * 4)` is an expression that returns the value 14.
 
 ### 自由程序项
 
-不是任何[实现][implementation][item]的成员的[程序项]，如*自由函数*或*自由常量*。自由程序项是与[关联程序项][associated item]相对的概念。\
+不是任何[实现][implementation]的成员的[程序项][item]，如*自由函数*或*自由常量*。自由程序项是与[关联程序项][associated item]相对的概念。\
 An [item] that is not a member of an [implementation], such as a *free function* or a *free const*. Contrast to an [associated item].
 
 ### 基础性trait
@@ -158,7 +158,7 @@ Types that can be referred to by a path directly. Specifically [enums], [structs
 
 ### 对象安全 trait
 
-可以用作 [trait对象]的 [trait][Traits]。只有遵循特定[规则][object safety]的 trait 才是对象安全的。\
+可以用作 [trait对象][trait objects]的 [trait][Traits]。只有遵循特定[规则][object safety]的 trait 才是对象安全的。\
 [Traits] that can be used as [trait objects]. Only traits that follow specific [rules][object safety] are object safe.
 
 ### 路径

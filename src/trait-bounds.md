@@ -102,18 +102,19 @@ impl<'a> PartialEq<i32> for &'a T {
 下面这类场景只能使用高阶trait约束，因为引用的生命周期比函数的生命周期参数短：[^译注3]
 
 ```rust
-fn call_on_ref_zero<F>(f: F) where for<'a> F: Fn(&'a i32) { 
+fn call_on_ref_zero<F>(f: F) where for<'a> F: Fn(&'a i32) {
     let zero = 0;
     f(&zero);}
 ```
 
 >译者注：译者下面举例代码可以和上面原文的代码对比着看。下面代码中，因为 `F` 没约束 `'a`，导致参数 `f` 引用了未经扩展生命周期的 `zero`
->```rust,compile_fail 
->fn call_on_ref_zero<'a, F>(f: F) where F: Fn(&'a i32) {
->    let zero = 0;
->    f(&zero);
->}
->```
+>
+> ```rust,compile_fail
+> fn call_on_ref_zero<'a, F>(f: F) where F: Fn(&'a i32) {
+>     let zero = 0;
+>     f(&zero);
+> }
+> ````
 
 高阶生命周期也可以贴近 trait 来指定，唯一的区别是生命周期参数的作用域，像下面这样 `'a` 的作用域只扩展到后面跟的 trait 的末尾，而不是整个约束[^译注4]。下面这个函数和上一个等价。
 
