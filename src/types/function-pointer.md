@@ -1,6 +1,10 @@
-# Function pointer types
+# 函数指针类型
 
-> **<sup>Syntax</sup>**\
+>[function-pointer.md](https://github.com/rust-lang/reference/blob/master/src/types/function-pointer.md)\
+>commit: 761ad774fcb300f2b506fed7b4dbe753cda88d80 \
+>本章译文最后维护日期：2021-1-17
+
+> **<sup>句法</sup>**\
 > _BareFunctionType_ :\
 > &nbsp;&nbsp; [_ForLifetimes_]<sup>?</sup> _FunctionTypeQualifiers_ `fn`\
 > &nbsp;&nbsp; &nbsp;&nbsp;  `(` _FunctionParametersMaybeNamedVariadic_<sup>?</sup> `)` _BareFunctionReturnType_<sup>?</sup>
@@ -23,17 +27,13 @@
 > _MaybeNamedFunctionParametersVariadic_ :\
 > &nbsp;&nbsp; ( _MaybeNamedParam_ `,` )<sup>\*</sup> _MaybeNamedParam_ `,` [_OuterAttribute_]<sup>\*</sup> `...`
 
-Function pointer types, written using the `fn` keyword, refer to a function
-whose identity is not necessarily known at compile-time. They can be created
-via a coercion from both [function items] and non-capturing [closures].
+函数指针类型（使用关键字 `fn` 写出）指向那些在编译时不必知道函数标识符的函数。它们也可以由[函数项][function items]类型或非捕获(non-capturing)[闭包][closures]经过一次自动强转(coercion)来创建。
 
-The `unsafe` qualifier indicates that the type's value is an [unsafe
-function], and the `extern` qualifier indicates it is an [extern function].
+非安全(`unsafe`)限定符表示类型的值是一个[非安全函数][unsafe function]，而外部(`extern`)限定符表示它是一个[外部函数][extern function]。
 
-Variadic parameters can only be specified with [`extern`] function types with
-the `"C"` or `"cdecl"` calling convention.
+可变参数只能通过使用 `"C"` 或 `"cdecl"` 的 ABI调用约定的 [`extern`]函数类型来指定。
 
-An example where `Binop` is defined as a function pointer type:
+下面示例中 `Binop` 被定义为函数指针类型：
 
 ```rust
 fn add(x: i32, y: i32) -> i32 {
@@ -47,10 +47,9 @@ let bo: Binop = add;
 x = bo(5,7);
 ```
 
-## Attributes on function pointer parameters
+## 函数指针参数上的属性
 
-Attributes on function pointer parameters follow the same rules and
-restrictions as [regular function parameters].
+函数指针参数上的属性遵循与[常规函数参数][regular function parameters]相同的规则和限制。
 
 [IDENTIFIER]: ../identifiers.md
 [_Abi_]: ../items/functions.md
@@ -64,3 +63,6 @@ restrictions as [regular function parameters].
 [function items]: function-item.md
 [unsafe function]: ../unsafe-functions.md
 [regular function parameters]: ../items/functions.md#attributes-on-function-parameters
+
+<!-- 2021-1-17-->
+<!-- checked -->

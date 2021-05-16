@@ -1,6 +1,10 @@
-# External blocks
+# 外部块
 
-> **<sup>Syntax</sup>**\
+>[external-blocks.md](https://github.com/rust-lang/reference/blob/master/src/items/external-blocks.md)\
+>commit: 761ad774fcb300f2b506fed7b4dbe753cda88d80 \
+>本章译文最后维护日期：2021-1-17
+
+> **<sup>句法</sup>**\
 > _ExternBlock_ :\
 > &nbsp;&nbsp; `unsafe`<sup>?</sup> `extern` [_Abi_]<sup>?</sup> `{`\
 > &nbsp;&nbsp; &nbsp;&nbsp; [_InnerAttribute_]<sup>\*</sup>\
@@ -13,90 +17,54 @@
 > &nbsp;&nbsp; &nbsp;&nbsp; | ( [_Visibility_]<sup>?</sup> ( [_StaticItem_] | [_Function_] ) )\
 > &nbsp;&nbsp; )
 
-External blocks provide _declarations_ of items that are not _defined_ in the
-current crate and are the basis of Rust's foreign function interface. These are
-akin to unchecked imports.
+外部块提供未在当前 crate 中*定义*的程序项的*声明*，外部块是 Rust 外部函数接口的基础。这其实是某种意义上的不受安全检查的导入入口。
 
-Two kind of item _declarations_ are allowed in external blocks: [functions] and
-[statics]. Calling functions or accessing statics that are declared in external
-blocks is only allowed in an `unsafe` context.
+外部块里允许存在两种形式的程序项*声明*：[函数][functions]和[静态项][statics]。只有在非安全(`unsafe`)上下文中才能调用在外部块中声明的函数或访问在外部块中声明的静态项。
 
-The `unsafe` keyword is syntactically allowed to appear before the `extern`
-keyword, but it is rejected at a semantic level. This allows macros to consume
-the syntax and make use of the `unsafe` keyword, before removing it from the
-token stream.
+在句法上，关键字 `unsafe` 允许出现在关键字 `extern` 之前，但是在语义层面却会被弃用。这种设计允许宏在将关键字 `unsafe` 从 token流中移除之前利用此句法来使用此关键字。
 
-## Functions
+## 函数
 
-Functions within external blocks are declared in the same way as other Rust
-functions, with the exception that they must not have a body and are instead
-terminated by a semicolon. Patterns are not allowed in parameters, only
-[IDENTIFIER] or `_` may be used. Function qualifiers (`const`, `async`,
-`unsafe`, and `extern`) are not allowed.
+外部块中的函数与其他 Rust函数的声明方式相同，但这里的函数不能有函数体，取而代之的是直接以分号结尾。外部块中的函数的参数不允许使用模式，只能使用[标识符(IDENTIFIER)][IDENTIFIER] 或 `_` 。函数限定符（`const`、`async`、`unsafe` 和 `extern`）也不允许在这里使用。
 
-Functions within external blocks may be called by Rust code, just like
-functions defined in Rust. The Rust compiler automatically translates between
-the Rust ABI and the foreign ABI.
+外部块中的函数可以被 Rust 代码调用，就跟调用在 Rust 中定义的函数一样。Rust 编译器会自动在 Rust ABI 和外部 ABI 之间进行转换。
 
-A function declared in an extern block is implicitly `unsafe`. When coerced to
-a function pointer, a function declared in an extern block has type `unsafe
-extern "abi" for<'l1, ..., 'lm> fn(A1, ..., An) -> R`, where `'l1`, ... `'lm`
-are its lifetime parameters, `A1`, ..., `An` are the declared types of its
-parameters and `R` is the declared return type.
+在外部块中声明的函数隐式为非安全(`unsafe`)的。当强转为函数指针时，外部块中声明的函数的类型就为 `unsafe extern "abi" for<'l1, ..., 'lm> fn(A1, ..., An) -> R`，其中 `'l1`，…`'lm` 是其生存期参数，`A1`，…，`An` 是该声明的参数的类型，`R` 是该声明的返回类型。
 
-## Statics
+## 静态项
 
-Statics within external blocks are declared in the same way as [statics] outside of external blocks,
-except that they do not have an expression initializing their value.
-It is `unsafe` to access a static item declared in an extern block, whether or
-not it's mutable, because there is nothing guaranteeing that the bit pattern at the static's
-memory is valid for the type it is declared with, since some arbitrary (e.g. C) code is in charge
-of initializing the static.
+[静态项][statics]在外部块内部与在外部块之外的声明方式相同，只是在外部块内部声明的静态项没有对应的初始化表达式。访问外部块中声明的静态项是 `unsafe` 的，不管它是否可变，因为没有任何保证来确保静态项的内存位模式(bit pattern)对声明它的类型是有效的，因为初始化这些静态项的可能是其他的任意外部代码（例如 C）。
 
-Extern statics can be either immutable or mutable just like [statics] outside of external blocks.
-An immutable static *must* be initialized before any Rust code is executed. It is not enough for
-the static to be initialized before Rust code reads from it.
+就像外部块之外的[静态项][statics]，外部静态项可以是不可变的，也可以是可变的。在执行任何 Rust 代码之前，不可变外部静态项*必须*被初始化。也就是说，对于外部静态项，仅在 Rust 代码读取它之前对它进行初始化是不够的。
 
 ## ABI
 
-By default external blocks assume that the library they are calling uses the
-standard C ABI on the specific platform. Other ABIs may be specified using an
-`abi` string, as shown here:
+不指定 ABI 字符串的默认情况下，外部块会假定使用指定平台上的标准 C ABI 约定来调用当前的库。其他的 ABI 约定可以使用字符串 `abi` 来指定，具体如下所示：
 
 ```rust
-// Interface to the Windows API
+// 到 Windows API 的接口。（译者注：指定使用 stdcall调用约定去调用 Windows API）
 extern "stdcall" { }
 ```
 
-There are three ABI strings which are cross-platform, and which all compilers
-are guaranteed to support:
+有三个 ABI 字符串是跨平台的，并且保证所有编译器都支持它们：
 
-* `extern "Rust"` -- The default ABI when you write a normal `fn foo()` in any
-  Rust code.
-* `extern "C"` -- This is the same as `extern fn foo()`; whatever the default
-  your C compiler supports.
-* `extern "system"` -- Usually the same as `extern "C"`, except on Win32, in
-  which case it's `"stdcall"`, or what you should use to link to the Windows
-  API itself
+* `extern "Rust"` -- 在任何 Rust 语言中编写的普通函数 `fn foo()` 默认使用的 ABI。
+* `extern "C"` -- 这等价于 `extern fn foo()`；无论您的 C编译器支持什么默认 ABI。
+* `extern "system"` -- 在 Win32 平台之外，中通常等价于 `extern "C"`。在 Win32 平台上，应该使用`"stdcall"`，或者其他应该使用的 ABI 字符串来链接它们自身的 Windows API。
 
-There are also some platform-specific ABI strings:
+还有一些特定于平台的 ABI 字符串：
 
-* `extern "cdecl"` -- The default for x86\_32 C code.
-* `extern "stdcall"` -- The default for the Win32 API on x86\_32.
-* `extern "win64"` -- The default for C code on x86\_64 Windows.
-* `extern "sysv64"` -- The default for C code on non-Windows x86\_64.
-* `extern "aapcs"` -- The default for ARM.
-* `extern "fastcall"` -- The `fastcall` ABI -- corresponds to MSVC's
-  `__fastcall` and GCC and clang's `__attribute__((fastcall))`
-* `extern "vectorcall"` -- The `vectorcall` ABI -- corresponds to MSVC's
-  `__vectorcall` and clang's `__attribute__((vectorcall))`
+* `extern "cdecl"` -- 通过 FFI 调用 x86\_32 C 资源所使用的默认调用约定。
+* `extern "stdcall"` -- 通过 FFI 调用 x86\_32架构下的 Win32 API 所使用的默认调用约定 
+* `extern "win64"` -- 通过 FFI 调用 x86\_64 Windows 平台下的 C 资源所使用的默认调用约定。
+* `extern "sysv64"` -- 通过 FFI 调用 非Windows x86\_64 平台下的 C 资源所使用的默认调用约定。
+* `extern "aapcs"` --通过 FFI 调用 ARM 接口所使用的默认调用约定
+* `extern "fastcall"` -- `fastcall` ABI——对应于 MSVC 的`__fastcall` 和 GCC 以及 clang 的 `__attribute__((fastcall))`。
+* `extern "vectorcall"` -- `vectorcall` ABI ——对应于 MSVC 的 `__vectorcall` 和 clang 的 `__attribute__((vectorcall))`。
 
-## Variadic functions
+## 可变参数函数
 
-Functions within external blocks may be variadic by specifying `...` as the
-last argument. There must be at least one parameter before the variadic
-parameter. The variadic parameter may optionally be specified with an
-identifier.
+可以在外部块内的函数的参数列表中的一个或多个具名参数后通过引入 `...` 来让该函数成为可变参数函数。注意可变参数`...` 前至少有一个具名参数，并且只能位于参数列表的最后。可变参数可以通过标识符来指定：
 
 ```rust
 extern "C" {
@@ -105,30 +73,21 @@ extern "C" {
 }
 ```
 
-## Attributes on extern blocks
+## 外部块上的属性
 
-The following [attributes] control the behavior of external blocks.
+下面列出的[属性][attributes]可以控制外部块的行为。
 
-### The `link` attribute
+### `link`属性
 
-The *`link` attribute* specifies the name of a native library that the
-compiler should link with for the items within an `extern` block. It uses the
-[_MetaListNameValueStr_] syntax to specify its inputs. The `name` key is the
-name of the native library to link. The `kind` key is an optional value which
-specifies the kind of library with the following possible values:
+*`link`属性*为外部(`extern`)块中的程序项指定编译器应该链接的本地库的名称。它使用 [_MetaListNameValueStr_]元项属性句法指定其输入参数。`name`键指定要链接的本地库的名称。`kind`键是一个可选值，它指定具有以下可选值的库类型：
 
-- `dylib` — Indicates a dynamic library. This is the default if `kind` is not
-  specified.
-- `static` — Indicates a static library.
-- `framework` — Indicates a macOS framework. This is only valid for macOS
-  targets.
+- `dylib` — 表示库类型是动态库。如果没有指定 `kind`，这是默认值。
+- `static` — 表示库类型是静态库。
+- `framework` — 表示库类型是 macOS 框架。这只对 macOS 目标平台有效。
 
-The `name` key must be included if `kind` is specified.
+如果指定了 `kind`键，则必须指定 `name`键。
 
-The `wasm_import_module` key may be used to specify the [WebAssembly module]
-name for the items within an `extern` block when importing symbols from the
-host environment. The default module name is `env` if `wasm_import_module` is
-not specified.
+当从主机环境导入 symbols 时，`wasm_import_module`键可用于为外部(`extern`)块中的程序项指定 [WebAssembly模块][WebAssembly module]名称。如果未指定 `wasm_import_module`，则默认模块名为 `env`。
 
 <!-- ignore: requires extern linking -->
 ```rust,ignore
@@ -148,16 +107,11 @@ extern {
 }
 ```
 
-It is valid to add the `link` attribute on an empty extern block. You can use
-this to satisfy the linking requirements of extern blocks elsewhere in your
-code (including upstream crates) instead of adding the attribute to each extern
-block.
+在空外部块上添加 `link`属性是有效的。可以用这种方式来满足代码中其他地方的外部块的链接需求（包括上游 crate），而不必向每个外部块都添加此属性。
 
-### The `link_name` attribute
+### `link_name`属性
 
-The `link_name` attribute may be specified on declarations inside an `extern`
-block to indicate the symbol to import for the given function or static. It
-uses the [_MetaNameValueStr_] syntax to specify the name of the symbol.
+可以在外部(`extern`)块内的程序项声明上指定 `link_name`属性，可以用它来指示要为给定函数或静态项导入的具体 symbol。它使用 [_MetaNameValueStr_]元项属性句法指定 symbol 的名称。
 
 ```rust
 extern {
@@ -166,10 +120,9 @@ extern {
 }
 ```
 
-### Attributes on function parameters
+### 函数参数上的属性
 
-Attributes on extern function parameters follow the same rules and
-restrictions as [regular function parameters].
+外部函数参数上的属性遵循与[常规函数参数][regular function parameters]相同的规则和限制。
 
 [IDENTIFIER]: ../identifiers.md
 [WebAssembly module]: https://webassembly.github.io/spec/core/syntax/modules.html
@@ -186,3 +139,6 @@ restrictions as [regular function parameters].
 [_Visibility_]: ../visibility-and-privacy.md
 [attributes]: ../attributes.md
 [regular function parameters]: functions.md#attributes-on-function-parameters
+
+<!-- 2021-1-17-->
+<!-- checked -->

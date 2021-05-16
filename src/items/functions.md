@@ -1,6 +1,10 @@
-# Functions
+# 函数
 
-> **<sup>Syntax</sup>**\
+>[functions.md](https://github.com/rust-lang/reference/blob/master/src/items/functions.md)\
+>commit: 245b8336818913beafa7a35a9ad59c85f28338fb \
+>本章译文最后维护日期：2021-5-6
+
+> **<sup>句法</sup>**\
 > _Function_ :\
 > &nbsp;&nbsp; _FunctionQualifiers_ `fn` [IDENTIFIER]&nbsp;[_GenericParams_]<sup>?</sup>\
 > &nbsp;&nbsp; &nbsp;&nbsp; `(` _FunctionParameters_<sup>?</sup> `)`\
@@ -37,85 +41,62 @@
 > _FunctionReturnType_ :\
 > &nbsp;&nbsp; `->` [_Type_]
 >
-> [^async-edition]: The `async` qualifier is not allowed in the 2015 edition.
+> [^async-edition]: 限定符`async`不能在 2015版中使用。
 >
-> [^fn-param-2015]: Function parameters with only a type are only allowed
->   in an associated function of a [trait item] in the 2015 edition.
+> [^fn-param-2015]: 在2015版中，只有类型的函数参数只允许出现在[trait项][trait item]的关联函数中。
 
-A _function_ consists of a [block], along with a name and a set of parameters.
-Other than a name, all these are optional. Functions are declared with the
-keyword `fn`. Functions may declare a set of *input* [*variables*][variables]
-as parameters, through which the caller passes arguments into the function, and
-the *output* [*type*][type] of the value the function will return to its caller
-on completion.
+*函数*由一个[块][block]以及一个名称和一组参数组成。除了名称，其他的都是可选的。函数使用关键字 `fn` 声明。函数可以声明一组*输入*[*变量*][variables]作为参数，调用者通过它向函数传递参数，函数完成后，它再将带有*输出*[*类型*][type]的结果值返回给调用者。
 
-When referred to, a _function_ yields a first-class *value* of the
-corresponding zero-sized [*function item type*], which
-when called evaluates to a direct call to the function.
+当一个*函数*被引用时，该函数会产生一个相应的零尺寸[*函数项类型(function item type)*][*function item type*]的一等(first-class)*值*，调用该值就相当于直接调用该函数。
 
-For example, this is a simple function:
+举个简单的定义函数的例子:
 ```rust
 fn answer_to_life_the_universe_and_everything() -> i32 {
     return 42;
 }
 ```
 
-## Function parameters
+## 函数参数
 
-As with `let` bindings, function parameters are irrefutable [patterns], so any
-pattern that is valid in a let binding is also valid as an argument:
+和 `let`绑定一样，函数参数是不可反驳型[模式][patterns]，所以任何在 let绑定中有效的模式都可以有效应用在函数参数上:
 
 ```rust
 fn first((value, _): (i32, i32)) -> i32 { value }
 ```
 
-If the first parameter is a _SelfParam_, this indicates that the function is a
-[method]. Functions with a self parameter may only appear as an [associated
-function] in a [trait] or [implementation].
+如果第一个参数是一个*SelfParam*类型的参数，这表明该函数是一个[方法][method]。带 self参数的函数只能在 [trait] 或[实现][implementation]中作为[关联函数][associated function]出现。
 
-A parameter with the `...` token indicates a [variadic function], and may only
-be used as the last parameter of a [external block] function. The variadic
-parameter may have an optional identifier, such as `args: ...`.
+带有 `...`token 的参数表示此函数是一个[可变参数函数][variadic function]，`...` 只能作为[外部块][external block]里的函数的最后一个参数使用。可变参数可以有一个可选标识符，例如 `args: ...`。
 
-## Function body
+## 函数体
 
-The block of a function is conceptually wrapped in a block that binds the
-argument patterns and then `return`s the value of the function's block. This
-means that the tail expression of the block, if evaluated, ends up being
-returned to the caller. As usual, an explicit return expression within
-the body of the function will short-cut that implicit return, if reached.
+函数的块在概念上被包装进在一个块中，该块绑定该函数的参数模式，然后返回(`return`)该函数的块的值。这意味着如果轮到块的*尾部表达式(tail expression)*被求值计算了，该块将结束，求得的值将被返回给调用者。通常，程序执行时如果流碰到函数体中的显式返回表达式(return expression)，就会截断那个隐式的最终表达式的执行。
 
-For example, the function above behaves as if it was written as:
+例如，上面例子里函数的行为就像下面被改写的这样:
 
 <!-- ignore: example expansion -->
 ```rust,ignore
-// argument_0 is the actual first argument passed from the caller
+// argument_0 是调用者真正传过来的第一个参数
 let (value, _) = argument_0;
 return {
     value
 };
 ```
 
-Functions without a body block are terminated with a semicolon. This form
-may only appear in a [trait] or [external block].
+没有主体块的函数以分号结束。这种形式只能出现在 [trait] 或[外部块][external block]中。
 
-## Generic functions
+## 泛型函数
 
-A _generic function_ allows one or more _parameterized types_ to appear in its
-signature. Each type parameter must be explicitly declared in an
-angle-bracket-enclosed and comma-separated list, following the function name.
+*泛型函数*允许在其签名中出现一个或多个*参数化类型(parameterized types)*。每个类型参数必须在函数名后面的尖括号封闭逗号分隔的列表中显式声明。
 
 ```rust
-// foo is generic over A and B
+// foo 是建立在 A 和 B 基础上的泛型函数
 
 fn foo<A, B>(x: A, y: B) {
 # }
 ```
 
-Inside the function signature and body, the name of the type parameter can be
-used as a type name. [Trait] bounds can be specified for type
-parameters to allow methods with that trait to be called on values of that
-type. This is specified using the `where` syntax:
+在函数签名上和函数体内部，类型参数的名称可以被用作类型名。可以为类型参数指定 [trait][Trait]约束，以允许对该类型的值调用这些 trait 的方法。这种约束是使用 `where`句法指定的：
 
 ```rust
 # use std::fmt::Debug;
@@ -123,39 +104,32 @@ fn foo<T>(x: T) where T: Debug {
 # }
 ```
 
-When a generic function is referenced, its type is instantiated based on the
-context of the reference. For example, calling the `foo` function here:
+当使用泛型函数时，它的（类型参数的）类型会基于调用的上下文被实例化。例如，这里调用 `foo` 函数:
 
 ```rust
 use std::fmt::Debug;
 
 fn foo<T>(x: &[T]) where T: Debug {
-    // details elided
+    // 省略细节
 }
 
 foo(&[1, 2]);
 ```
 
-will instantiate type parameter `T` with `i32`.
+将用 `i32` 实例化类型参数 `T`。
 
-The type parameters can also be explicitly supplied in a trailing [path]
-component after the function name. This might be necessary if there is not
-sufficient context to determine the type parameters. For example,
-`mem::size_of::<u32>() == 4`.
+类型参数也可以在函数名之后的末段[路径][path]组件(trailing path component，即 `::<type>`)中显式地提供。如果没有足够的上下文来确定类型参数，那么这可能是必要的。例如：`mem::size_of::<u32>() == 4`。
 
-## Extern function qualifier
+## 外部函数限定符
 
-The `extern` function qualifier allows providing function _definitions_ that can
-be called with a particular ABI:
+外部函数限定符(`extern`)可以提供那些能通过特定 ABI 才能调用的函数的*定义*：
 
 <!-- ignore: fake ABI -->
 ```rust,ignore
 extern "ABI" fn foo() { /* ... */ }
 ```
 
-These are often used in combination with [external block] items which provide
-function _declarations_ that can be used to call functions without providing
-their _definition_:
+这些通常与提供了函数*声明*的[外部块][external block]程序项一起使用，这样就可以调用此函数而不必同时提供此函数的*定义*：
 
 <!-- ignore: fake ABI -->
 ```rust,ignore
@@ -165,168 +139,126 @@ extern "ABI" {
 unsafe { foo() }
 ```
 
-When `"extern" Abi?*` is omitted from `FunctionQualifiers` in function items,
-the ABI `"Rust"` is assigned. For example:
+当函数的 `FunctionQualifiers` 句法规则中的 `"extern" Abi?*` 选项被省略时，会默认使用 `"Rust"` 类型的 ABI。例如:
 
 ```rust
 fn foo() {}
 ```
 
-is equivalent to:
+等价于：
 
 ```rust
 extern "Rust" fn foo() {}
 ```
 
-Functions in Rust can be called by foreign code, and using an ABI that
-differs from Rust allows, for example, to provide functions that can be
-called from other programming languages like C:
+使用 `"Rust"` 之外的 ABI 可以让 Rust 中声明的函数被其他编程语言调用。比如下面声明了一个可以从 C 中调用的函数：
 
 ```rust
-// Declares a function with the "C" ABI
+// 使用 "C" ABI 声明一个函数
 extern "C" fn new_i32() -> i32 { 0 }
 
-// Declares a function with the "stdcall" ABI
+// 使用 "stdcall" ABI声明一个函数
 # #[cfg(target_arch = "x86_64")]
 extern "stdcall" fn new_i32_stdcall() -> i32 { 0 }
 ```
 
-Just as with [external block], when the `extern` keyword is used and the `"ABI`
-is omitted, the ABI used defaults to `"C"`. That is, this:
+与[外部块][external block]一样，当使用关键字 `extern` 而省略 `"ABI` 时，ABI 默认使用的是 `"C"`。也就是说这个：
 
 ```rust
 extern fn new_i32() -> i32 { 0 }
 let fptr: extern fn() -> i32 = new_i32;
 ```
 
-is equivalent to:
+等价于：
 
 ```rust
 extern "C" fn new_i32() -> i32 { 0 }
 let fptr: extern "C" fn() -> i32 = new_i32;
 ```
 
-Functions with an ABI that differs from `"Rust"` do not support unwinding in the
-exact same way that Rust does. Therefore, unwinding past the end of functions
-with such ABIs causes the process to abort.
+非 `"Rust"` 的 ABI 函数不支持与 Rust 函数完全相同的展开(unwind)方式。因此展开进程过这类 ABI 函数的尾部时就会导致该进程被终止。（译者注：展开是逆向的。）
 
-> **Note**: The LLVM backend of the `rustc` implementation
-aborts the process by executing an illegal instruction.
+> **注意**: `rustc` 背后的 LLVM 是通过执行一个非法指令来实现中止进程的功能的。
 
-## Const functions
+## 常量函数
 
-Functions qualified with the `const` keyword are [const functions], as are
-[tuple struct] and [tuple variant] constructors. _Const functions_  can be
-called from within [const context]s.
+使用关键字 `const` 限定的函数是[常量(const)函数][const functions]，[元组结构体][tuple struct]构造函数和[元组变体][tuple variant]构造函数也是如此。可以在[常量上下文][const context]中调用*常量函数*。
 
-Const functions are not allowed to be [async](#async-functions), and cannot
-use the [`extern` function qualifier](#extern-function-qualifier).
+常量函数不允许是 [async](#async-functions)类型的，并且不能使用 [`extern`函数限定符](#extern-function-qualifier)。
 
-## Async functions
+## 异步函数
 
-Functions may be qualified as async, and this can also be combined with the
-`unsafe` qualifier:
+函数可以被限定为异步的，这还可以与 `unsafe` 限定符结合在一起使用：
 
 ```rust,edition2018
 async fn regular_example() { }
 async unsafe fn unsafe_example() { }
 ```
 
-Async functions do no work when called: instead, they
-capture their arguments into a future. When polled, that future will
-execute the function's body.
+异步函数在调用时不起作用：相反，它们将参数捕获进一个 future。当该函数被轮询(polled)时，该 future 将执行该函数的函数体。
 
-An async function is roughly equivalent to a function
-that returns [`impl Future`] and with an [`async move` block][async-blocks] as
-its body:
+一个异步函数大致相当于返回一个以 [`async move`块][async-blocks]为代码体的 [`impl Future`] 的函数：
 
 ```rust,edition2018
-// Source
+// 源代码
 async fn example(x: &str) -> usize {
     x.len()
 }
 ```
 
-is roughly equivalent to:
+大致等价于：
 
 ```rust,edition2018
 # use std::future::Future;
-// Desugared
+// 脱糖后的
 fn example<'a>(x: &'a str) -> impl Future<Output = usize> + 'a {
     async move { x.len() }
 }
 ```
 
-The actual desugaring is more complex:
+实际的脱糖(desugaring)过程相当复杂：
 
-- The return type in the desugaring is assumed to capture all lifetime
-  parameters from the `async fn` declaration. This can be seen in the
-  desugared example above, which explicitly outlives, and hence
-  captures, `'a`.
-- The [`async move` block][async-blocks] in the body captures all function
-  parameters, including those that are unused or bound to a `_`
-  pattern. This ensures that function parameters are dropped in the
-  same order as they would be if the function were not async, except
-  that the drop occurs when the returned future has been fully
-  awaited.
+- 脱糖过程中的返回类型被假定捕获了 *`async fn`声明*中的所有的生存期参数（包括省略的）。这可以在上面的脱糖示例中看到：（我们）显式地给它补上了一个生存期参数 `'a`，因此捕捉到 `'a`。
+- 代码体中的 [`async move`块][async blocks]捕获所有函数参数，包括未使用或绑定到 `_` 模式的参数。参数销毁方面，除了销毁动作需要在返回的 future 完全执行(fully awaited)完成后才会发生外，可以确保异步函数参数的销毁顺序与函数非异步时的顺序相同。
 
-For more information on the effect of async, see [`async` blocks][async-blocks].
+有关异步效果的详细信息，请参见 [`async`块][async-blocks]。
 
 [async-blocks]: ../expressions/block-expr.md#async-blocks
 [`impl Future`]: ../types/impl-trait.md
 
-> **Edition differences**: Async functions are only available beginning with
-> Rust 2018.
+> **版本差异**: 异步函数只能从 Rust 2018 版才开始可用。
 
-### Combining `async` and `unsafe`
+### `async` 和 `unsafe` 的联合使用
 
-It is legal to declare a function that is both async and unsafe. The
-resulting function is unsafe to call and (like any async function)
-returns a future. This future is just an ordinary future and thus an
-`unsafe` context is not required to "await" it:
+声明一个既异步又非安全(`unsafe`)的函数是合法的。调用这样的函数是非安全的，并且（像任何异步函数一样）会返回一个 future。这个 future 只是一个普通的 future，因此“await”它不需要一个 `unsafe` 的上下文：
 
 ```rust,edition2018
-// Returns a future that, when awaited, dereferences `x`.
+// 等待这个返回的 future 相当于解引用 `x`。
 //
-// Soundness condition: `x` must be safe to dereference until
-// the resulting future is complete.
+// 安全条件: 在返回的 future 执行完成前，`x` 必须能被安全解引用
 async unsafe fn unsafe_example(x: *const i32) -> i32 {
   *x
 }
 
 async fn safe_example() {
-    // An `unsafe` block is required to invoke the function initially:
+    // 起初调用上面这个函数时需要一个非安全(`unsafe`)块：
     let p = 22;
     let future = unsafe { unsafe_example(&p) };
 
-    // But no `unsafe` block required here. This will
-    // read the value of `p`:
+    // 但是这里非安全(`unsafe`)块就没必要了，这里能正常读到 `p`:
     let q = future.await;
 }
 ```
 
-Note that this behavior is a consequence of the desugaring to a
-function that returns an `impl Future` -- in this case, the function
-we desugar to is an `unsafe` function, but the return value remains
-the same.
+请注意，此行为是对返回 `impl Future` 的函数进行脱糖处理的结果——在本例中，我们脱糖处理生成的函数是一个非安全(`unsafe`)函数，这个非安全(`unsafe`)函数返回值与原始定义的函数的返回值仍保持一致。
 
-Unsafe is used on an async function in precisely the same way that it
-is used on other functions: it indicates that the function imposes
-some additional obligations on its caller to ensure soundness. As in any
-other unsafe function, these conditions may extend beyond the initial
-call itself -- in the snippet above, for example, the `unsafe_example`
-function took a pointer `x` as argument, and then (when awaited)
-dereferenced that pointer. This implies that `x` would have to be
-valid until the future is finished executing, and it is the callers
-responsibility to ensure that.
+非安全限定在异步函数上的使用方式与它在其他函数上的使用方式完全相同：只是它表示该函数会要求它的调用者提供一些额外的义务/条件来确保该函数的健全性(soundness)。与任何其他非安全函数一样，这些条件可能会超出初始调用本身——例如，在上面的代码片段中， 函数 `unsafe_example` 将指针 `x` 作为参数，然后（在执行 await 时）解引用了对该指针的引用。这意味着在 future 完成执行之前，`x` 必须是有效的，调用者有责任确保这一点。
 
-## Attributes on functions
+## 函数上的属性
 
-[Outer attributes][attributes] are allowed on functions. [Inner
-attributes][attributes] are allowed directly after the `{` inside its [block].
+在函数上允许使用[外部属性][attributes]，也允许在[函数体][block]中的 `{` 后面直接放置[内部属性][attributes]。
 
-This example shows an inner attribute on a function. The function is documented
-with just the word "Example".
+下面这个例子显示了一个函数的内部属性。该函数的文档中只会出现单词“Example”。
 
 ```rust
 fn documented() {
@@ -334,20 +266,13 @@ fn documented() {
 }
 ```
 
-> Note: Except for lints, it is idiomatic to only use outer attributes on
-> function items.
+> 注意：除了 lint检查类属性，函数上一般惯用的还是外部属性。
 
-The attributes that have meaning on a function are [`cfg`], [`cfg_attr`], [`deprecated`],
-[`doc`], [`export_name`], [`link_section`], [`no_mangle`], [the lint check
-attributes], [`must_use`], [the procedural macro attributes], [the testing
-attributes], and [the optimization hint attributes]. Functions also accept
-attributes macros.
+在函数上有意义的属性是 [`cfg`]、[`cfg_attr`]、[`deprecated`]、[`doc`]、[`export_name`]、[`link_section`]、[`no_mangle`]、[lint检查类属性][the lint check attributes]、[`must_use`]、[过程宏属性][the procedural macro attributes]、[测试类属性][the testing attributes]和[优化提示类属性][the optimization hint attributes]。函数也可以接受属性宏。
 
-## Attributes on function parameters
+## 函数参数上的属性
 
-[Outer attributes][attributes] are allowed on function parameters and the
-permitted [built-in attributes] are restricted to `cfg`, `cfg_attr`, `allow`,
-`warn`, `deny`, and `forbid`.
+函数参数允许使用[外部属性][attributes]，允许的[内置属性][built-in attributes]仅限于 `cfg`、`cfg_attr`、`allow`、`warn`、`deny` 和 `forbid`。
 
 ```rust
 fn len(
@@ -358,12 +283,9 @@ fn len(
 }
 ```
 
-Inert helper attributes used by procedural macro attributes applied to items are also
-allowed but be careful to not include these inert attributes in your final `TokenStream`.
+应用于程序项的过程宏属性所使用的惰性辅助属性也是允许的，但是要注意不要在最终（输出）的 `TokenStream` 中包含这些惰性属性。
 
-For example, the following code defines an inert `some_inert_attribute` attribute that
-is not formally defined anywhere and the `some_proc_macro_attribute` procedural macro is
-responsible for detecting its presence and removing it from the output token stream.
+例如，下面的代码定义了一个未在任何地方正式定义的惰性属性 `some_inert_attribute`，而 `some_proc_macro_attribute` 过程宏负责检测它的存在，并从输出 token流 `TokenStream` 中删除它。
 
 <!-- ignore: requires proc macro -->
 ```rust,ignore
@@ -401,7 +323,7 @@ fn foo_oof(#[some_inert_attribute] arg: u8) {
 [the testing attributes]: ../attributes/testing.md
 [the optimization hint attributes]: ../attributes/codegen.md#optimization-hints
 [`deprecated`]: ../attributes/diagnostics.md#the-deprecated-attribute
-[`doc`]: ../../rustdoc/the-doc-attribute.html
+[`doc`]: https://doc.rust-lang.org/rustdoc/the-doc-attribute.html
 [`must_use`]: ../attributes/diagnostics.md#the-must_use-attribute
 [patterns]: ../patterns.md
 [`export_name`]: ../abi.md#the-export_name-attribute
@@ -413,3 +335,6 @@ fn foo_oof(#[some_inert_attribute] arg: u8) {
 [associated function]: associated-items.md#associated-functions-and-methods
 [implementation]: implementations.md
 [variadic function]: external-blocks.md#variadic-functions
+
+<!-- 2021-1-17-->
+<!-- checked -->

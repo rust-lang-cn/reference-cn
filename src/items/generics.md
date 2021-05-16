@@ -1,6 +1,10 @@
-# Generic parameters
+# 类型参数和生存期参数
 
-> **<sup>Syntax</sup>**\
+>[generics.md](https://github.com/rust-lang/reference/blob/master/src/items/generics.md)\
+>commit: 7fd47ef4786f86ccdb5d6f0f198a6a9fdec5497c \
+>本章译文最后维护日期：2021-1-17
+
+> **<sup>句法</sup>**\
 > _GenericParams_ :\
 > &nbsp;&nbsp; &nbsp;&nbsp; `<` `>`\
 > &nbsp;&nbsp;  | `<` (_GenericParam_ `,`)<sup>\*</sup> _GenericParam_ `,`<sup>?</sup> `>`
@@ -17,14 +21,9 @@
 > _ConstParam_:\
 > &nbsp;&nbsp; `const` [IDENTIFIER] `:` [_Type_]
 
-[Functions], [type aliases], [structs], [enumerations], [unions], [traits], and
-[implementations] may be *parameterized* by types, constants, and lifetimes. These
-parameters are listed in angle <span class="parenthetical">brackets (`<...>`)</span>,
-usually immediately after the name of the item and before its definition. For
-implementations, which don't have a name, they come directly after `impl`.
-The order of generic parameters is restricted to lifetime parameters, then type parameters, and then const parameters.
+[函数][Functions]、[类型别名][type aliases]、[结构体][structs]、[枚举][enumerations]、[联合体][unions]、[trait][traits] 和[实现][implementations]可以通过类型参数、常量参数和生存期参数达到*参数化*配置的的效果。这些参数在尖括号<span class="parenthetical">（`<...>`）</span>中列出，通常都是紧跟在程序项名称之后和程序项的定义之前。对于实现，因为它没有名称，那它们就直接位于关键字 `impl` 之后。泛型参数的申明顺序是生存期参数在最前面，然后是类型参数，最后是常量参数。
 
-Some examples of items with type, const, and lifetime parameters:
+下面给出一些带类型参数、常量参数和生存期参数的程序项的示例：
 
 ```rust
 fn foo<'a, T>() {}
@@ -33,56 +32,42 @@ struct Ref<'a, T> where T: 'a { r: &'a T }
 struct InnerArray<T, const N: usize>([T; N]);
 ```
 
-Generic parameters are in scope within the item definition where they are
-declared. They are not in scope for items declared within the body of a
-function as described in [item declarations].
+泛型参数在声明它们的程序项定义的范围内有效。它们不是函数体中声明的程序项，这个在[程序项声明][item declarations]中有讲述。
 
-[References], [raw pointers], [arrays], [slices][arrays], [tuples], and
-[function pointers] have lifetime or type parameters as well, but are not
-referred to with path syntax.
+[引用][References]、[裸指针][raw pointers]、[数组][arrays]、[切片][arrays]、[元组][tuples]和[函数指针][function pointers]也有生存期参数或类型参数，但这些程序项不能使用路径句法去引用。
 
-### Const generics
+### 常量泛型
 
-*Const generic parameters* allow items to be generic over constant values. The
-const identifier introduces a name for the constant parameter, and all
-instances of the item must be instantiated with a value of the given type.
+*常量泛型参数*允许程序项在常量值上泛型化。const标识符为常量参数引入了一个名称，并且该程序项的所有实例必须用给定类型的值去实例化该参数。
 
-<!-- TODO: update above to say "introduces a name in the [value namespace]"
-    once namespaces are added. -->
+<!-- TODO: update above to say "introduces a name in the [value namespace]" once namespaces are added. -->
 
-The only allowed types of const parameters are `u8`, `u16`, `u32`, `u64`, `u128`, `usize`
-`i8`, `i16`, `i32`, `i64`, `i128`, `isize`, `char` and `bool`.
+常量参数类型值允许为：`u8`, `u16`, `u32`, `u64`, `u128`, `usize`, `i8`, `i16`, `i32`, `i64`, `i128`, `isize`, `char` 和 `bool` 这些类型。
 
-Const parameters can be used anywhere a [const item] can be used, with the
-exception that when used in a [type] or [array repeat expression], it must be
-standalone (as described below). That is, they are allowed in the following
-places:
+常量参数可以在任何可以使用[常量项][Const item]的地方使用，但在[类型][type]或[数组定义中的重复表达式][array repeat expression]中使用时，必须如下所述是独立的。也就是说，它们可以在以下地方上允许：
 
-1. As an applied const to any type which forms a part of the signature of the
-   item in question.
-2. As part of a const expression used to define an [associated const], or as a
-   parameter to an [associated type].
-3. As a value in any runtime expression in the body of any functions in the
-   item.
-4. As a parameter to any type used in the body of any functions in the item.
-5. As a part of the type of any fields in the item.
+1. 可以用于类型内部，用它来构成所涉及的程序项签名的一部分。
+2. 作为常量表达式的一部分，用于定义[关联常量项][associated const]，或作为[关联类型][associated type]的形参。
+3. 作为程序项里的任何函数体中的任何运行时表达式中的值。
+4. 作为程序项中任何函数体中使用到的任何类型的参数。
+5. 作为程序项中任何字段类型的一部分使用。
 
 ```rust
-// Examples where const generic parameters can be used.
+// 可以使用常量泛型参数的示例。
 
-// Used in the signature of the item itself.
+// 用于程序项本身的签名
 fn foo<const N: usize>(arr: [i32; N]) {
-    // Used as a type within a function body.
+    // 在函数体中用作类型。
     let x: [i32; N];
-    // Used as an expression.
+    // 用作表达。
     println!("{}", N * 2);
 }
 
-// Used as a field of a struct.
+// 用作结构体的字段
 struct Foo<const N: usize>([i32; N]);
 
 impl<const N: usize> Foo<N> {
-    // Used as an associated constant.
+    // 用作关联常数
     const CONST: usize = N * 4;
 }
 
@@ -91,15 +76,15 @@ trait Trait {
 }
 
 impl<const N: usize> Trait for Foo<N> {
-    // Used as an associated type.
+    // 用作关联类型
     type Output = [i32; N];
 }
 ```
 
 ```rust,compile_fail
-// Examples where const generic parameters cannot be used.
+// 不能使用常量泛型参数的示例
 fn foo<const N: usize>() {
-    // Cannot use in item definitions within a function body.
+    // 能在函数体中的程序项定义中使用
     const BAD_CONST: [usize; N] = [1; N];
     static BAD_STATIC: [usize; N] = [1; N];
     fn inner(bad_arg: [usize; N]) {
@@ -110,31 +95,21 @@ fn foo<const N: usize>() {
 }
 ```
 
-As a further restriction, const parameters may only appear as a standalone
-argument inside of a [type] or [array repeat expression]. In those contexts,
-they may only be used as a single segment [path expression], possibly inside a
-[block] (such as `N` or `{N}`). That is, they cannot be combined with other
-expressions.
+作为进一步的限制，常量只能作为[类型][type]或[数组定义中的重复表达式][array repeat expression]中的独立实参出现。在这种上下文限制下，它们只能以单段[路径表达式][path expression]的形式使用（例如 `N` 或以[块][block]`{N}` 的形式出现）。也就是说，它们不能与其他表达式结合使用。
 
 ```rust,compile_fail
-// Examples where const parameters may not be used.
+// 不能使用常量参数的示例。
 
-// Not allowed to combine in other expressions in types, such as the
-// arithmetic expression in the return type here.
+// 不允许在类型中的表达式中组合使用，例如这里的返回类型中的算术表达式
 fn bad_function<const N: usize>() -> [u8; {N + 1}] {
-    // Similarly not allowed for array repeat expressions.
+    // 同样的，这种情况也不允许在数组定义里的重复表达式中使用
     [1; {N + 1}]
 }
 ```
 
-A const argument in a [path] specifies the const value to use for that item.
-The argument must be a [const expression] of the type ascribed to the const
-parameter. The const expression must be a [block expression][block]
-(surrounded with braces) unless it is a single path segment (an [IDENTIFIER])
-or a [literal] (with a possibly leading `-` token).
+[路径][path]中的常量实参指定了该程序项使用的常量值。实参必须是常量形参所属类型的[常量表达式][const expression]。常量表达式必须是[块表达式][block]（用花括号括起来），除非它是单独路径段（一个[标识符][IDENTIFIER]）或一个[字面量][literal]（此字面量可以是以 `-` 打头的 token）。
 
-> **Note**: This syntactic restriction is necessary to avoid requiring
-> infinite lookahead when parsing an expression inside of a type.
+> **注意**：这种句法限制是必要的，用以避免在解析类型内部的表达式时可能会导致无限递归(infinite lookahead)。
 
 ```rust
 fn double<const N: i32>() {
@@ -144,7 +119,7 @@ fn double<const N: i32>() {
 const SOME_CONST: i32 = 12;
 
 fn example() {
-    // Example usage of a const argument.
+    // 常量参数的使用示例。
     double::<9>();
     double::<-123>();
     double::<{7 + 8}>();
@@ -153,9 +128,7 @@ fn example() {
 }
 ```
 
-When there is ambiguity if a generic argument could be resolved as either a
-type or const argument, it is always resolved as a type. Placing the argument
-in a block expression can force it to be interpreted as a const argument.
+当存在歧义时，如果泛型参数可以同时被解析为类型或常量参数，那么它总是被解析为类型。在块表达式中放置实参可以强制将其解释为常量实参。
 
 <!-- TODO: Rewrite the paragraph above to be in terms of namespaces, once
     namespaces are introduced, and it is clear which namespace each parameter
@@ -164,34 +137,27 @@ in a block expression can force it to be interpreted as a const argument.
 ```rust,compile_fail
 type N = u32;
 struct Foo<const N: usize>;
-// The following is an error, because `N` is interpreted as the type alias `N`.
+// 下面用法是错误的，因为 `N` 被解释为类型别名。
 fn foo<const N: usize>() -> Foo<N> { todo!() } // ERROR
-// Can be fixed by wrapping in braces to force it to be interpreted as the `N`
-// const parameter:
+// 可以使用花括号来强制将 `N` 解释为常量形参。
 fn bar<const N: usize>() -> Foo<{ N }> { todo!() } // ok
 ```
 
-Unlike type and lifetime parameters, const parameters can be declared without
-being used inside of a parameterized item, with the exception of
-implementations as described in [generic implementations]:
+与类型参数和生存期参数不同，常量参数可以声明而不必在被它参数化的程序项中使用，但和[泛型实现][generic implementations]关联的实现例外：
 
 ```rust,compile_fail
 // ok
 struct Foo<const N: usize>;
 enum Bar<const M: usize> { A, B }
 
-// ERROR: unused parameter
+// ERROR: 参数未使用
 struct Baz<T>;
 struct Biz<'a>;
 struct Unconstrained;
 impl<const N: usize> Unconstrained {}
 ```
 
-When resolving a trait bound obligation, the exhaustiveness of all
-implementations of const parameters is not considered when determining if the
-bound is satisfied. For example, in the following, even though all possible
-const values for the `bool` type are implemented, it is still an error that
-the trait bound is not satisfied:
+当处理 trait约束时，在确定是否满足相关约束时，不会考虑常量参数的所有实现的穷尽性。例如，在下面的例子中，即使实现了 `bool`类型的所有可能的常量值，仍会报错提示 trait约束不满足。
 
 ```rust,compile_fail
 struct Foo<const B: bool>;
@@ -202,14 +168,13 @@ impl Bar for Foo<false> {}
 fn needs_bar(_: impl Bar) {}
 fn generic<const B: bool>() {
     let v = Foo::<B>;
-    needs_bar(v); // ERROR: trait bound `Foo<B>: Bar` is not satisfied
+    needs_bar(v); // ERROR: trait约束 `Foo<B>: Bar` 未被满足
 }
 ```
 
+## where子句
 
-## Where clauses
-
-> **<sup>Syntax</sup>**\
+> **<sup>句法</sup>**\
 > _WhereClause_ :\
 > &nbsp;&nbsp; `where` ( _WhereClauseItem_ `,` )<sup>\*</sup> _WhereClauseItem_ <sup>?</sup>
 >
@@ -224,65 +189,44 @@ fn generic<const B: bool>() {
 > &nbsp;&nbsp; _ForLifetimes_<sup>?</sup> [_Type_] `:` [_TypeParamBounds_]<sup>?</sup>
 >
 > _ForLifetimes_ :\
-> &nbsp;&nbsp; `for` [_GenericParams_](#generic-parameters)
+> &nbsp;&nbsp; `for` `<` [_GenericParams_](#generic-parameters) `>`
 
-*Where clauses* provide another way to specify bounds on type and lifetime
-parameters as well as a way to specify bounds on types that aren't type
-parameters.
+*where子句*提供了另一种方法来为类型参数和生存期参数指定约束(bound)，甚至可以为非类型参数的类型指定约束。
 
-The `for` keyword can be used to introduce [higher-ranked lifetimes]. It only
-allows [_LifetimeParam_] parameters.
+关键字`for` 可以用来引入[高阶生存期参数][higher-ranked lifetimes]。它只允许在 [_LifetimeParam_] 参数上使用。
 
-Bounds that don't use the item's parameters or [higher-ranked lifetimes] are
-checked when the item is defined. It is an error for such a bound to be false.
+定义程序项时，其约束没有使用程序项的泛型参数或[高阶生存期参数][higher-ranked lifetimes]，这样是可以通过编译器的安全检查，但这样的做法将必然导致错误。
 
-[`Copy`], [`Clone`], and [`Sized`] bounds are also checked for certain generic
-types when defining the item. It is an error to have `Copy` or `Clone` as a
-bound on a mutable reference, [trait object] or [slice][arrays] or `Sized` as a
-bound on a trait object or slice.
+在定义程序项时，编译器还会检查某些泛型参数的类型是否存在 [`Copy`]、[`Clone`] 和 [`Sized`] 这些约束。将`Copy` 或 `Clone` 作为可变引用、[trait object]或[slice][arrays]这些程序项的约束是错误的，或将 `Sized` 作为 trait对象或切片的约束也是错误的。
 
 ```rust,compile_fail
 struct A<T>
 where
-    T: Iterator,            // Could use A<T: Iterator> instead
+    T: Iterator,            // 可以用 A<T: Iterator> 来替代
     T::Item: Copy,
     String: PartialEq<T>,
-    i32: Default,           // Allowed, but not useful
-    i32: Iterator,          // Error: the trait bound is not satisfied
-    [T]: Copy,              // Error: the trait bound is not satisfied
+    i32: Default,           // 允许，但没什么用
+    i32: Iterator,          // 错误: 此 trait约束不适合，i32 没有实现 Iterator
+    [T]: Copy,              // 错误: 此 trait约束不适合，切片上不能有此 trait约束
 {
     f: T,
 }
 ```
 
-## Attributes
+## 属性
 
-Generic lifetime and type parameters allow [attributes] on them. There are no
-built-in attributes that do anything in this position, although custom derive
-attributes may give meaning to it.
+泛型生存期参数和泛型类型参数允许[属性][attributes]，但在目前这个位置还没有任何任何有意义的内置属性，但用户可能可以通过自定义的派生属性来设置一些有意义的属性。
 
-This example shows using a custom derive attribute to modify the meaning of a
-generic parameter.
+下面示例演示如何使用自定义派生属性修改泛型参数的含义。
 
 <!-- ignore: requires proc macro derive -->
 ```rust,ignore
-// Assume that the derive for MyFlexibleClone declared `my_flexible_clone` as
-// an attribute it understands.
+// 假设 MyFlexibleClone 的派生项将 `my_flexible_clone` 声明为它可以理解的属性。
 #[derive(MyFlexibleClone)]
 struct Foo<#[my_flexible_clone(unbounded)] H> {
     a: *const H
 }
 ```
-
-[IDENTIFIER]: ../identifiers.md
-[LIFETIME_OR_LABEL]: ../tokens.md#lifetimes-and-loop-labels
-
-[_LifetimeParam_]: #generic-parameters
-[_LifetimeBounds_]: ../trait-bounds.md
-[_Lifetime_]: ../trait-bounds.md
-[_OuterAttribute_]: ../attributes.md
-[_Type_]: ../types.md#type-expressions
-[_TypeParamBounds_]: ../trait-bounds.md
 
 [array repeat expression]: ../expressions/array-expr.md
 [arrays]: ../types/array.md
@@ -316,3 +260,6 @@ struct Foo<#[my_flexible_clone(unbounded)] H> {
 [type]: ../types.md
 [unions]: unions.md
 [attributes]: ../attributes.md
+
+<!-- 2021-1-20-->
+<!-- checked -->

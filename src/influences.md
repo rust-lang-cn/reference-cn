@@ -1,22 +1,23 @@
-# Influences
+# 影响来源
 
-Rust is not a particularly original language, with design elements coming from
-a wide range of sources. Some of these are listed below (including elements
-that have since been removed):
+>[influences.md](https://github.com/rust-lang/reference/blob/master/src/influences.md)\
+>commit:  dc3808468e37ff4c1f663d26c491a3549a42c201 \
+>本章译文最后维护日期：2020-11-3
 
-* SML, OCaml: algebraic data types, pattern matching, type inference,
-  semicolon statement separation
-* C++: references, RAII, smart pointers, move semantics, monomorphization,
-  memory model
-* ML Kit, Cyclone: region based memory management
-* Haskell (GHC): typeclasses, type families
-* Newsqueak, Alef, Limbo: channels, concurrency
-* Erlang: message passing, thread failure, <strike>linked thread failure</strike>,
-  <strike>lightweight concurrency</strike>
-* Swift: optional bindings
-* Scheme: hygienic macros
-* C#: attributes
-* Ruby: closure syntax, <strike>block syntax</strike>
-* NIL, Hermes: <strike>typestate</strike>
-* [Unicode Annex #31](http://www.unicode.org/reports/tr31/): identifier and
-  pattern syntax
+Rust 并不是一种极端原创的语言，它的设计元素来源广泛。下面列出了其中一些（包括已经删除的）：
+
+* SML，OCaml：代数数据类型、模式匹配、类型推断、分号语句分隔
+* C++：引用，RAII，智能指针，移动语义，单态化(monomorphization)，内存模型
+* ML Kit, Cyclone：基于区域的内存管理(region based memory management)
+* Haskell (GHC)：类型属性(typeclasses), 类型簇(type families)
+* Newsqueak, Alef, Limbo：通道，并发
+* Erlang：消息传递，线程失败，<strike>链接线程失败</strike>，<strike>轻量级并发</strike>
+* Swift：可选绑定(optional bindings)
+* Scheme：卫生宏(hygienic macros)
+* C#：属性
+* Ruby：闭包句法，<strike>块句法</strike>
+* NIL, Hermes：<strike>typestate</strike>
+* [Unicode Annex #31](http://www.unicode.org/reports/tr31/)：标识符和模式句法
+
+<!-- 2020-11-12-->
+<!-- checked -->

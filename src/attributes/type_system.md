@@ -1,17 +1,18 @@
-# Type system attributes
+# 类型系统属性
 
-The following [attributes] are used for changing how a type can be used.
+>[type_system.md](https://github.com/rust-lang/reference/blob/master/src/attributes/type_system.md)\
+>commit: d8cbe4eedb77bae3db9eff87b1238e7e23f6ae92 \
+>本章译文最后维护日期：2021-02-21
 
-## The `non_exhaustive` attribute
+以下[属性][attributes]用于改变类型的使用方式。
 
-The *`non_exhaustive` attribute* indicates that a type or variant may have
-more fields or variants added in the future. It can be applied to
-[`struct`s][struct], [`enum`s][enum], and `enum` variants.
+## `non_exhaustive`属性
 
-The `non_exhaustive` attribute uses the [_MetaWord_] syntax and thus does not
-take any inputs.
+*`non_exhaustive`属性*表示类型或变体将来可能会添加更多字段或变体。它可以应用在[结构体(`struct`)][struct]上、[枚举(`enum`)][enum]上 和 枚举变体上。
 
-Within the defining crate, `non_exhaustive` has no effect.
+`non_exhaustive`属性使用 [_MetaWord_]元项属性句法，因此不接受任何输入。
+
+在当前（`non_exhaustive`限制的类型的）定义所在的 crate 内，`non_exhaustive` 没有效果。
 
 ```rust
 #[non_exhaustive]
@@ -22,7 +23,7 @@ pub struct Config {
 
 #[non_exhaustive]
 pub enum Error {
-    Message(String),
+    Message(String), // 译者注：此变体为元组变体
     Other,
 }
 
@@ -32,10 +33,10 @@ pub enum Message {
     #[non_exhaustive] Quit,
 }
 
-// Non-exhaustive structs can be constructed as normal within the defining crate.
+// 非穷尽结构体可以在定义它的 crate 中正常构建。
 let config = Config { window_width: 640, window_height: 480 };
 
-// Non-exhaustive structs can be matched on exhaustively within the defining crate.
+// 非穷尽结构体可以在定义它的 crate 中进行详尽匹配
 if let Config { window_width, window_height } = config {
     // ...
 }
@@ -43,91 +44,82 @@ if let Config { window_width, window_height } = config {
 let error = Error::Other;
 let message = Message::Reaction(3);
 
-// Non-exhaustive enums can be matched on exhaustively within the defining crate.
+// 非穷尽枚举可以在定义它的 crate 中进行详尽匹配
 match error {
     Error::Message(ref s) => { },
     Error::Other => { },
 }
 
 match message {
-    // Non-exhaustive variants can be matched on exhaustively within the defining crate.
+    // 非穷尽变体可以在定义它的 crate 中进行详尽匹配
     Message::Send { from, to, contents } => { },
     Message::Reaction(id) => { },
     Message::Quit => { },
 }
 ```
 
-Outside of the defining crate, types annotated with `non_exhaustive` have limitations that
-preserve backwards compatibility when new fields or variants are added.
+在定义所在的 crate之外，标注为 `non_exhaustive` 的类型须在添加新字段或变体时保持向后兼容性。
 
-Non-exhaustive types cannot be constructed outside of the defining crate:
+非穷尽类型(non-exhaustive types)不能在定义它的 crate 之外构建：
 
-- Non-exhaustive variants ([`struct`][struct] or [`enum` variant][enum]) cannot be constructed
-  with a [_StructExpression_] \(including with [functional update syntax]).
-- [`enum`][enum] instances can be constructed.
+- 非穷尽变体（[结构体(`struct`)][struct]或[枚举变体(`enum` variant)][enum]）不能用 [_StructExpression_]句法（包括[函数式更新(functional update)句法][functional update syntax]）构建。
+- [枚举(`enum`)][enum]实例能被构建。
 
+示例：（译者注：本例把上例看成本例的 `upstream` ）
 <!-- ignore: requires external crates -->
 ```rust,ignore
-// `Config`, `Error`, and `Message` are types defined in an upstream crate that have been
-// annotated as `#[non_exhaustive]`.
+// `Config`、`Error` `Message`是在上游 crate 中定义的类型，这些类型已被标注为 `#[non_exhaustive]`。
 use upstream::{Config, Error, Message};
 
-// Cannot construct an instance of `Config`, if new fields were added in
-// a new version of `upstream` then this would fail to compile, so it is
-// disallowed.
+// 不能构造 `Config` 的实例，如果在 `upstream` 的新版本中添加了新字段，则本地编译会失败，因此不允许这样做。
 let config = Config { window_width: 640, window_height: 480 };
 
-// Can construct an instance of `Error`, new variants being introduced would
-// not result in this failing to compile.
+// 可以构造 `Error` 的实例，引入的新变体不会导致编译失败。
 let error = Error::Message("foo".to_string());
 
-// Cannot construct an instance of `Message::Send` or `Message::Reaction`,
-// if new fields were added in a new version of `upstream` then this would
-// fail to compile, so it is disallowed.
+// 无法构造 `Message::Send` 或 `Message::Reaction` 的实例，
+// 如果在 `upstream` 的新版本中添加了新字段，则本地编译失败，因此不允许。
 let message = Message::Send { from: 0, to: 1, contents: "foo".to_string(), };
 let message = Message::Reaction(0);
 
-// Cannot construct an instance of `Message::Quit`, if this were converted to
-// a tuple-variant `upstream` then this would fail to compile.
+// 无法构造 `Message::Quit` 的实例，
+// 如果 `upstream` 内的 `Message::Quit` 的因为添加字段变成元组变体(tuple-variant/tuple variant)后，则本地编译失败。
 let message = Message::Quit;
 ```
 
-There are limitations when matching on non-exhaustive types outside of the defining crate:
+在定义所在的 crate 之外对非穷尽类型进行匹配，有如下限制：
 
-- When pattern matching on a non-exhaustive variant ([`struct`][struct] or [`enum` variant][enum]),
-  a [_StructPattern_] must be used which must include a `..`. Tuple variant constructor visibility
-  is lowered to `min($vis, pub(crate))`.
-- When pattern matching on a non-exhaustive [`enum`][enum], matching on a variant does not
-  contribute towards the exhaustiveness of the arms.
+- 当模式匹配一个非穷尽变体（[结构体(`struct`)][struct]或[枚举变体(`enum` variant)][enum]）时，必须使用 [_StructPattern_]句法进行匹配，其匹配臂必须有一个为 `..`。元组变体的构造函数的可见性降低为 `min($vis, pub(crate))`。
+- 当模式匹配在一个非穷尽的[枚举(`enum`)][enum]上时，增加对单个变体的匹配无助于匹配臂需满足枚举变体的穷尽性(exhaustiveness)的这一要求。
 
+示例：（译者注：可以把上上例看成本例的 `upstream` ）
 <!-- ignore: requires external crates -->
 ```rust, ignore
-// `Config`, `Error`, and `Message` are types defined in an upstream crate that have been
-// annotated as `#[non_exhaustive]`.
+// `Config`、`Error` `Message` 是在上游 crate 中定义的类型，这些类型已被标注为 `#[non_exhaustive]`。
 use upstream::{Config, Error, Message};
 
-// Cannot match on a non-exhaustive enum without including a wildcard arm.
+// 不包含通配符匹配臂，无法匹配非穷尽枚举。
 match error {
   Error::Message(ref s) => { },
   Error::Other => { },
-  // would compile with: `_ => {},`
+  // 加上 `_ => {},` 就能编译通过
 }
 
-// Cannot match on a non-exhaustive struct without a wildcard.
+// 不包含通配符匹配臂，无法匹配非穷尽结构体
 if let Ok(Config { window_width, window_height }) = config {
-    // would compile with: `..`
+    // 加上 `..` 就能编译通过
 }
 
 match message {
-  // Cannot match on a non-exhaustive struct enum variant without including a wildcard.
+  // 没有通配符，无法匹配非穷尽（结构体/枚举内的）变体
   Message::Send { from, to, contents } => { },
-  // Cannot match on a non-exhaustive tuple or unit enum variant.
+  // 无法匹配非穷尽元组或单元枚举变体(unit enum variant)。
   Message::Reaction(type) => { },
   Message::Quit => { },
 }
 ```
 
-Non-exhaustive types are always considered inhabited in downstream crates.
+非穷尽类型最好放在下游 crate 里。
 
 [_MetaWord_]: ../attributes.md#meta-item-attribute-syntax
 [_StructExpression_]: ../expressions/struct-expr.md

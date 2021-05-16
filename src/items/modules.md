@@ -1,18 +1,23 @@
 # 模块
 
-> **<sup>Syntax:</sup>**\
+>[modules.md](https://github.com/rust-lang/reference/blob/master/src/items/modules.md)\
+>commit: eabdf09207bf3563ae96db9d576de0758c413d5d \
+>本章译文最后维护日期：2021-1-24
+
+
+> **<sup>句法:</sup>**\
 > _Module_ :\
-> &nbsp;&nbsp; &nbsp;&nbsp; `mod` [IDENTIFIER] `;`\
-> &nbsp;&nbsp; | `mod` [IDENTIFIER] `{`\
+> &nbsp;&nbsp; &nbsp;&nbsp; `unsafe`<sup>?</sup> `mod` [IDENTIFIER] `;`\
+> &nbsp;&nbsp; | `unsafe`<sup>?</sup> `mod` [IDENTIFIER] `{`\
 > &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; [_InnerAttribute_]<sup>\*</sup>\
 > &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; [_Item_]<sup>\*</sup>\
 > &nbsp;&nbsp; &nbsp;&nbsp; `}`
 
-模块是零个或多个[项][items]的容器。
+模块是零个或多个[程序项][items]的容器。
 
-*模块项* 是一个模块，包含在大括号中，需要命名，并以关键字 `mod` 作为前缀。模块项将一个新的命名模块引入到组成 crate 的模块树中。模块可以任意嵌套。
+*模块项*是一个用花括号括起来的，有名称的，并以关键字 `mod` 作为前缀的模块。模块项将一个新的具名模块引入到组成 crate 的模块树中。模块可以任意嵌套。
 
-模块示例：
+模块的一个例子：
 
 ```rust
 mod math {
@@ -32,28 +37,31 @@ mod math {
 }
 ```
 
-模块和类型共享相同的命名空间。禁止在作用域中声明与模块同名的命名类型，即：类型定义、trait、结构体、枚举、联合体、类型参数或 crate 不能遮蔽作用域中模块的名称，反之亦然。使用 `use` 纳入作用域的项同样有此限制。
+模块和类型共享相同的命名空间。禁止在同一个作用域中声明与此作用域下模块同名的具名类型(named type)：也就是说，类型定义、trait、结构体、枚举、联合体、类型参数或 crate 不能在其作用域中屏蔽此作用域中也生效的模块名称，反之亦然。使用 `use` 引入到当前作用域的程序项也受这个限制。
 
-## 模块的源文件名字
+在句法上，关键字 `unsafe` 允许出现在关键字 `mod` 之前，但是在语义层面却会被弃用。这种设计允许宏在将关键字 `unsafe` 从 token流中移除之前利用此句法来使用此关键字。
 
-从外部文件加载没有主体的模块。当模块没有 `path` 属性时，文件的路径将镜像逻辑[模块路径][module
-path]。原型模块路径组件是目录，且模块的内容位于一个具有模块名称和 `.rs` 扩展名的文件中。例如，如下模块结构具有相应的文件系统结构：
+## Module Source Filenames
+## 模块的源文件名
 
-模块路径                   | 文件系统路径      | 文件内容
+没有代码体的模块是从外部文件加载的。当模块没有 `path` 属性限制时，文件的路径和逻辑上的[模块路径][module path]互为镜像。祖先模块的路径组件(path component)是此模块文件的目录，而模块的内容存在一个以该模块名为文件名，以 `.rs` 为扩展文件名的文件中。例如，下面的示例可以反映这种模块结构和文件系统结构相互映射的关系：
+
+模块路径                   | 文件系统路径       | 文件内容
 ------------------------- | ---------------  | -------------
 `crate`                   | `lib.rs`         | `mod util;`
 `crate::util`             | `util.rs`        | `mod config;`
 `crate::util::config`     | `util/config.rs` |
 
-目录也可以作为模块，目录名既是模块文件名，该目录包含一个名为 `mod.rs` 的文件。上面例子中模块路径 `crate::util` 可以将文件系统路径替换表达为 `util/mod.rs`。不允许 `util.rs` 和 `util/mod.rs` 同时存在。
+当一个目录下有一个名为 `mod.rs` 的源文件时，模块的文件名也可以和这个目录互相映射。上面的例子也可以用一个承载同一源码内容的名为 `util/mod.rs` 的实体文件来表达模块路径 `crate::util`。注意不允许 `util.rs` 和 `util/mod.rs` 同时存在。
 
-> **注**：在 `rustc` 1.30 之前，使用 `mod.rs` 文件是加载具有嵌套的子级模块的方法。鼓励使用新的命名约定，因为它更加一致，并且避免在一个项目中有许多文件被命名为 `mod.rs`。
+> **注意**：在`rustc` 1.30 版本之前，使用文件 `mod.rs` 是加载嵌套子模块的方法。现在鼓励使用新的命名约定，因为它更一致，并且可以避免在项目中搞出许多名为 `mod.rs` 的文件。
 
-### `path` 属性
+### The `path` attribute
+### `path`属性
 
-用于加载外部文件模块的目录和文件可以被 `path` 属性影响。
+用于加载外部文件模块的目录和文件可以受 `path`属性的影响。（或者说可以联合使用 `path`属性来重新指定那种没有代码体的模块声明的加载对象的文件路径。）
 
-对于不在内联模块体内的模块上的 `path` 属性，文件路径为相对于源文件所在的目录。例如，以下代码段将使用基于其所在位置的路径：
+对于不在内联模块(inline module)块内的模块上的 `path`属性，此属性引入的文件的路径为相对于当前源文件所在的目录。例如，下面的代码片段将使用基于其所在位置的路径:
 
 <!-- ignore: requires external files -->
 ```rust,ignore
@@ -61,12 +69,12 @@ path]。原型模块路径组件是目录，且模块的内容位于一个具有
 mod c;
 ```
 
-源文件    | `c` 的文件位置 | `c` 的模块路径
+Source File    | `c`'s File Location | `c`'s Module Path
 -------------- | ------------------- | ----------------------
 `src/a/b.rs`   | `src/a/foo.rs`      | `crate::a::b::c`
 `src/a/mod.rs` | `src/a/foo.rs`      | `crate::a::c`
 
-对于内联模块体内的 `path` 属性，文件路径的相对位置取决于 `path` 属性所在的源文件的类型。“mod-rs” 源文件是根模块（例如 `lib.rs` 或者 `main.rs`）和具有 `mod.rs` 文件的模块，“non-mod-rs” 源文件是其他模块文件。mod-rs 文件中的内联模块体内的 `path` 属性的路径为相对于 mod-rs 文件的目录，包括作为目录的内联模块组件。对于 non-mod-rs 文件，除了路径以具有 non-mod-rs 模块名称的目录开头外，其它都是相同的。例如，以下代码段将使用基于其所在位置的路径：
+对于处在内联模块块内的 `path`属性，此属性引入的文件的路径取决于 `path`属性所在的源文件的类型。（先对源文件进行分类，）“mod-rs”源文件是根模块（比如是 `lib.rs` 或 `main.rs`）和文件名为 `mod.rs` 的模块，“非mod-rs”源文件是所有其他模块文件。（那）在 mod-rs 文件中，内联模块块内的 `path` 属性（引入的文件的）路径是相对于 mod-rs 文件的目录（该目录包括作为目录的内联模块组件名）。对于非mod-rs 文件，除了路径以此模块名为目录前段外，其他是一样的。例如，下面的代码片段将使用基于其所在位置的路径：
 
 <!-- ignore: requires external files -->
 ```rust,ignore
@@ -76,45 +84,42 @@ mod inline {
 }
 ```
 
-源文件    | `内联`' 的文件位置   | `内联`' 的模块路径
+Source File    | `inner`'s File Location   | `inner`'s Module Path
 -------------- | --------------------------| ----------------------------
 `src/a/b.rs`   | `src/a/b/inline/other.rs` | `crate::a::b::inline::inner`
 `src/a/mod.rs` | `src/a/inline/other.rs`   | `crate::a::inline::inner`
 
-在内联模块和内部嵌套模块上组合上述 `path` 属性规则的示例（mod-rs 和 non-mod-rs 文件都适用）：
+在内联模块和其内嵌模块上混合应用上述 `path`属性规则的一个例子（mod-rs 和非mod-rs 文件都适用）：
 
 <!-- ignore: requires external files -->
 ```rust,ignore
 #[path = "thread_files"]
-mod thread {
-    // Load the `local_data` module from `thread_files/tls.rs` relative to
-    // this source file's directory.
+mod thread { // 译者注：有模块要内联进来的内联模块
+    // 从相对于当前源文件的目录下的 `thread_files/tls.rs` 文件里载 `local_data` 模块。
     #[path = "tls.rs"]
-    mod local_data;
+    mod local_data; // 译者注：内嵌模块
 }
 ```
 
-## prelude 项
+## Attributes on Modules
+## 模块上的属性
 
-模块在作用域中隐式地有一些名称。这些名称是内建类型、宏，在外部 crate 上使用 [`#[macro_use]`][macro_use]，以及 crate 的 [prelude] 导入。这些名称都由一个标识符组成。这些名称不是模块的一部分，因此——比如说——任何名称 `name`，`self::name` 均不是有效路径。通过在模块或其父模块中放置 `no_implicit_prelude` [属性][attribute]，可以移除由 [prelude] 添加的名称。
+模块和所有程序项一样能接受外部属性。它们也能接受内部属性：可以在带有代码体的模块的 `{` 之后，也可以在模块源文件的开头（但须在可选的 BOM 和 shebang 之后）。
 
-## 模块的属性
-
-和所有项类似，模块也接受外部属性。模块还接受内部属性：要么在 `{` 之后（具有主体的模块文件中），要么在源文件开头——可选的字节顺序标记（BOM）和释伴（shebang）之后。
-
-对模块有意义的内建属性包括：[`cfg`]、[`deprecated`]、[`doc`]、[lint 检查属性][the lint check attributes]、`path`，以及 `no_implicit_prelude`。模块也接受宏属性。
+在模块中有意义的内置属性是 [`cfg`]、[`deprecated`]、[`doc`]、[lint检查类属性][the lint check attributes]、[`path`] 和 [`no_implicit_prelude`]。模块也能接受宏属性。
 
 [_InnerAttribute_]: ../attributes.md
 [_Item_]: ../items.md
 [macro_use]: ../macros-by-example.md#the-macro_use-attribute
 [`cfg`]: ../conditional-compilation.md
 [`deprecated`]: ../attributes/diagnostics.md#the-deprecated-attribute
-[`doc`]: ../../rustdoc/the-doc-attribute.html
+[`doc`]: https://doc.rust-lang.org/rustdoc/the-doc-attribute.html
+[`no_implicit_prelude`]: ../names/preludes.md#the-no_implicit_prelude-attribute
+[`path`]: #the-path-attribute
 [IDENTIFIER]: ../identifiers.md
 [attribute]: ../attributes.md
 [items]: ../items.md
 [module path]: ../paths.md
-[prelude]: ../crates-and-source-files.md#preludes-and-no_std
 [the lint check attributes]: ../attributes/diagnostics.md#lint-check-attributes
 
 <script>

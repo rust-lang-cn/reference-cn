@@ -1,54 +1,55 @@
-# Pointer types
+# 指针类型
 
-All pointers in Rust are explicit first-class values.
-They can be moved or copied, stored into data structs, and returned from functions.
+>[pointer.md](https://github.com/rust-lang/reference/blob/master/src/types/pointer.md)\
+>commit: 4664361ba2f7bcc568f6bef4d119b53971fdf8ad \
+>本章译文最后维护日期：2021-4-6
 
-## References (`&` and `&mut`)
+Rust 中所有的指针都是显式的头等(first-class)值。
+它们可以被移动或复制，存储到其他数据结构中，或从函数中返回。
 
-> **<sup>Syntax</sup>**\
+## 引用(`&` 和 `&mut`)
+
+> **<sup>句法</sup>**\
 > _ReferenceType_ :\
 > &nbsp;&nbsp; `&` [_Lifetime_]<sup>?</sup> `mut`<sup>?</sup> [_TypeNoBounds_]
 
-### Shared references (`&`)
+### 共享引用(`&`)
 
-These point to memory _owned by some other value_.
-When a shared reference to a value is created it prevents direct mutation of the value.
-[Interior mutability] provides an exception for this in certain circumstances.
-As the name suggests, any number of shared references to a value may exist.
-A shared reference type is written `&type`, or `&'a type` when you need to specify an explicit lifetime.
-Copying a reference is a "shallow" operation:
-it involves only copying the pointer itself, that is, pointers are `Copy`.
-Releasing a reference has no effect on the value it points to, but referencing of a [temporary value] will keep it alive during the scope of the reference itself.
+共享引用(`&`)指向*由其他值拥有的*内存。
+创建了对值的共享引用可以防止对该值的直接更改。
+但在某些特定情况下，[内部可变性][Interior mutability]又提供了这种情况的一种例外。
+顾名思义，对一个值的共享引用的次数没有限制。共享引用类型被写为 `&type`；当需要指定显式的生存期时可写为 `&'a type`。
+拷贝一个引用是一个“浅拷贝(shallow)”操作：它只涉及复制指针本身，也就是指针实现了 `Copy` trait 的意义所在。
+释放引用对共享引用所指向的值没有影响，但是对[临时值][temporary value]的引用的存在将使此临时值在此引用的作用域内保持存活状态。
 
-### Mutable references (`&mut`)
+### 可变引用(`&mut`)
 
-These also point to memory owned by some other value.
-A mutable reference type is written `&mut type` or `&'a mut type`.
-A mutable reference (that hasn't been borrowed) is the only way to access the value it points to, so is not `Copy`.
+可变引用(`&mut`)也指向其他值所拥有的内存。
+可变引用类型被写为 `&mut type` 或 `&'a mut type`。
+可变引用（其还未被借出[^译注1]）是访问它所指向的值的唯一方法，所以可变引用没有实现 `Copy` trait。
 
-## Raw pointers (`*const` and `*mut`)
+## 裸指针(`*const` 和 `*mut`)
 
-> **<sup>Syntax</sup>**\
+> **<sup>句法</sup>**\
 > _RawPointerType_ :\
 > &nbsp;&nbsp; `*` ( `mut` | `const` ) [_TypeNoBounds_]
 
-Raw pointers are pointers without safety or liveness guarantees.
-Raw pointers are written as `*const T` or `*mut T`.
-For example `*const i32` means a raw pointer to a 32-bit integer.
-Copying or dropping a raw pointer has no effect on the lifecycle of any other value.
-Dereferencing a raw pointer is an [`unsafe` operation].
-This can also be used to convert a raw pointer to a reference by reborrowing it (`&*` or `&mut *`).
-Raw pointers are generally discouraged in Rust code;
-they exist to support interoperability with foreign code, and writing performance-critical or low-level functions.
+裸指针是没有安全性或可用性(liveness)保证的指针。
+裸指针写为 `*const T` 或 `*mut T`，例如，`*const i32` 表示指向 32-bit 有符号整数的裸指针。
+拷贝或销毁(dropping )裸指针对任何其他值的生命周期(lifecycle)都没有影响。对
+裸指针的解引用是[非安全(`unsafe`)操作][`unsafe` operation]，可以通过重新借用裸指针（`&*` 或 `&mut *`）将其转换为引用。
+在 Rust 代码中通常不鼓励使用裸指针；它们的存在是为了提升与外部代码的互操作性，以及编写对性能要求很高的函数或很底层的函数。
 
-When comparing raw pointers they are compared by their address, rather than by what they point to.
-When comparing raw pointers to [dynamically sized types] they also have their additional data compared.
+在比较裸指针时，比较的是它们的地址，而不是它们指向的数据。
+当比较裸指针和[动态尺寸类型][dynamically sized types]时，还会比较它们指针上的附加/元数据。
 
-Raw pointers can be created directly using [`core::ptr::addr_of!`] for `*const` pointers and [`core::ptr::addr_of_mut!`] for `*mut` pointers.
+可以直接使用 [`core::ptr::addr_of!`] 创建 `*const` 类型的裸指针，通过 [`core::ptr::addr_of_mut!`] 创建 `*mut` 类型的裸指针。
 
-## Smart Pointers
+## 智能指针
 
-The standard library contains additional 'smart pointer' types beyond references and raw pointers.
+标准库包含了一些额外的“智能指针”类型，它们提供了在引用和裸指针这类低级指针之外的更多的功能。
+
+[^译注1]: 译者理解这里是指 `&mut type` 如果被借出，就成了 `&&mut type`，这样就又成了不可变借用了。
 
 [`core::ptr::addr_of!`]: ../../core/ptr/macro.addr_of.html
 [`core::ptr::addr_of_mut!`]: ../../core/ptr/macro.addr_of_mut.html

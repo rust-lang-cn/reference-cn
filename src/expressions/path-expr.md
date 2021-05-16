@@ -1,13 +1,17 @@
-# Path expressions
+# 路径表达式
 
-> **<sup>Syntax</sup>**\
+>[path-expr.md](https://github.com/rust-lang/reference/blob/master/src/expressions/path-expr.md)\
+>commit: eb5290329316e96c48c032075f7dbfa56990702b \
+>本章译文最后维护日期：2021-02-21
+
+> **<sup>句法</sup>**\
 > _PathExpression_ :\
 > &nbsp;&nbsp; &nbsp;&nbsp; [_PathInExpression_]\
 > &nbsp;&nbsp; | [_QualifiedPathInExpression_]
 
-A [path] used as an expression context denotes either a local variable or an item.
-Path expressions that resolve to local or static variables are [place expressions], other paths are [value expressions].
-Using a [`static mut`] variable requires an [`unsafe` block].
+[路径][path]被用做表达式上下文时表示局部变量或程序项。
+解析为局部变量或静态变量的路径表达式是[位置表达式][place expressions]，其他路径是[值表达式][value expressions]。
+使用 [`static mut`]变量需在 [`unsafe`块][`unsafe` block]中。
 
 ```rust
 # mod globals {

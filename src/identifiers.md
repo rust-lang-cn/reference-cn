@@ -1,31 +1,39 @@
 # 标识符
 
-> **<sup>Lexer:<sup>**\
-> 标识符_或_关键字：\
-> &nbsp;&nbsp; &nbsp;&nbsp; \[`a`-`z` `A`-`Z`]&nbsp;\[`a`-`z` `A`-`Z` `0`-`9` `_`]<sup>\*</sup>\
-> &nbsp;&nbsp; | `_` \[`a`-`z` `A`-`Z` `0`-`9` `_`]<sup>+</sup>
+>[identifiers.md](https://github.com/rust-lang/reference/blob/master/src/identifiers.md)\
+>commit: 28d628166940ffa982a1da552e0acfcc88ff8889 \
+>本章译文最后维护日期：2021-04-23
+
+> **<sup>词法分析:<sup>**\
+> IDENTIFIER_OR_KEYWORD :\
+> &nbsp;&nbsp; &nbsp;&nbsp; XID_start XID_continue<sup>\*</sup>\
+> &nbsp;&nbsp; | `_` XID_continue<sup>+</sup>
 >
-> RAW_IDENTIFIER <sup><strong>译否？</strong></sup> : `r#` IDENTIFIER_OR_KEYWORD <sup><strong>译否？</strong></sup> <sub>*除外：`crate`, `self`, `super`, `Self`*</sub>
+> RAW_IDENTIFIER : `r#` IDENTIFIER_OR_KEYWORD <sub>*排除 `crate`, `self`, `super`, `Self`*</sub>
 >
-> NON_KEYWORD_IDENTIFIER <sup><strong>译否？</strong></sup> : IDENTIFIER_OR_KEYWORD <sup><strong>译否？</strong></sup> <sub>*除外：[规定关键字]或[保留关键字]*</sub>
+> NON_KEYWORD_IDENTIFIER : IDENTIFIER_OR_KEYWORD <sub>*排除[严格关键字][strict]和[保留关键字][reserved] *</sub>
 >
-> IDENTIFIER <sup><strong>译否？</strong></sup> :\
-> NON_KEYWORD_IDENTIFIER <sup><strong>译否？</strong></sup> | RAW_IDENTIFIER <sup><strong>译否？</strong></sup>
+> IDENTIFIER :\
+> NON_KEYWORD_IDENTIFIER | RAW_IDENTIFIER
 
-标识符是如下形式的任何非空 ASCII 字符串：
+标识符是如下形式的任何非空 Unicode 字符串：
 
-要么是——
+要么是:
 
-* 首字符是字母。
-* 其余字符是字母、数字，或 `_`。
+* 首字符拥有 [`XID_start`] 字符属性。
+* 其余字符拥有 [`XID_continue`] 字符属性。
 
-要么是——
+要么是：
 
 * 首字符是 `_`。
-* 标识符由多个字符组成，单个 `_` 不是有效标识符。
-* 其余字符是字母、数字，或 `_`。
+* 整个字符串由多个字符组成。单个 `_` 不是有效标识符。
+* 其余字符拥有 [`XID_continue`] 字符属性。
 
-原生标识符类似于普通标识符，但前缀是 `r#`（注意 `r#` 不包括在实际标识符中）。原生标识符与普通标识符的区别是：原生标识符可以是除上述列举的 `RAW_IDENTIFIER` 外的任何规定关键字或保留关键字。
+> **注意**：[`XID_start`] 和 [`XID_continue`] 作为字符属性涵盖了用于构成常见的 C 和 Java语言族标识符的字符范围。
+ 
+除了有形式前缀 `r#` 修饰外，原生标识符(raw identifier)与普通标识符类似。（注意形式前缀 `r#` 不包括在实际标识符中。）与普通标识符不同，原生标识符可以是除上面列出的 `RAW_IDENTIFIER` 之外的任何严格关键字或保留关键字。
 
-[规定关键字]: keywords.md#strict-keywords
-[保留关键字]: keywords.md#reserved-keywords
+[strict]: keywords.md#strict-keywords
+[reserved]: keywords.md#reserved-keywords
+[`XID_start`]:  http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%3AXID_Start%3A%5D&abb=on&g=&i=
+[`XID_continue`]: http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5B%3AXID_Continue%3A%5D&abb=on&g=&i=

@@ -1,44 +1,41 @@
-# Application Binary Interface (ABI)
+# 应用程序二进制接口(ABI)
 
-This section documents features that affect the ABI of the compiled output of
-a crate.
+>[abi.md.md](https://github.com/rust-lang/reference/blob/master/src/abi.md)\
+>commit:  e773318a837092d7b5276bbeaf9fda06cca61cee \
+>本章译文最后维护日期：2021-1-16
 
-See *[extern functions]* for information on specifying the ABI for exporting
-functions. See *[external blocks]* for information on specifying the ABI for
-linking external libraries.
+本节介绍影响 crate 编译输出的 ABI 的各种特性。
 
-## The `used` attribute
+有关为导出函数(exporting functions)指定 ABI 的信息，请参阅[*外部函数*][extern functions]。参阅[*外部块*]][external blocks]了解关于指定 ABI 来链接外部库的信息。
 
-The *`used` attribute* can only be applied to [`static` items]. This [attribute] forces the
-compiler to keep the variable in the output object file (.o, .rlib, etc. excluding final binaries)
-even if the variable is not used, or referenced, by any other item in the crate.
-However, the linker is still free to remove such an item.
+## `used`属性
 
-Below is an example that shows under what conditions the compiler keeps a `static` item in the
-output object file.
+*`used`属性*只能用在[静态(`static`)项][`static` items]上。此[属性][attribute]强制编译器将该变量保留在输出对象文件中(.o、.rlib 等，不包括最终的二进制文件)，即使该变量没有被 crate 中的任何其他项使用或引用。注意，链接器(linker)仍有权移除此类变量。
+
+下面的示例显示了编译器在什么条件下在输出对象文件中保留静态(`static`)项。
 
 ``` rust
 // foo.rs
 
-// This is kept because of `#[used]`:
+// 将保留，因为 `#[used]`:
 #[used]
 static FOO: u32 = 0;
 
-// This is removable because it is unused:
+// 可移除，因为没实际使用:
 #[allow(dead_code)]
 static BAR: u32 = 0;
 
-// This is kept because it is publicly reachable:
+// 将保留，因为这个是公有的:
 pub static BAZ: u32 = 0;
 
-// This is kept because it is referenced by a public, reachable function:
+// 将保留，因为这个被可达公有函数引用:
 static QUUX: u32 = 0;
 
 pub fn quux() -> &'static u32 {
     &QUUX
 }
 
-// This is removable because it is referenced by a private, unused (dead) function:
+// 可移除，因为被私有且未被使用的函数引用:
 static CORGE: u32 = 0;
 
 #[allow(dead_code)]
@@ -57,20 +54,15 @@ $ nm -C foo.o
 0000000000000000 T foo::quux
 ```
 
-## The `no_mangle` attribute
+## `no_mangle`属性
 
-The *`no_mangle` attribute* may be used on any [item] to disable standard
-symbol name mangling. The symbol for the item will be the identifier of the
-item's name.
+可以在任何[程序项][item]上使用 *`no_mangle`属性*来禁用标准名称符号名混淆(standard symbol name mangling)。禁用此功能后，此程序项的导出符号(symbol)名将直接是此程序项的原来的名称标识符。
 
-Additionally, the item will be publicly exported from the produced library or
-object file, similar to the [`used` attribute](#the-used-attribute).
+此外，就跟[`used`属性](#the-used-attribute)一样，此属性修饰的程序项也将从生成的库或对象文件中公开导出。
 
-## The `link_section` attribute
+## `link_section`属性
 
-The *`link_section` attribute* specifies the section of the object file that a
-[function] or [static]'s content will be placed into. It uses the
-[_MetaNameValueStr_] syntax to specify the section name.
+`link_section`属性指定了输出对象文件中[函数][function]或[静态项][static]的内容将被放置到的节点位置。它使用 [_MetaNameValueStr_]元项属性句法指定节点名称。
 
 <!-- no_run: don't link. The format of the section name is platform-specific. -->
 ```rust,no_run
@@ -79,11 +71,9 @@ The *`link_section` attribute* specifies the section of the object file that a
 pub static VAR1: u32 = 1;
 ```
 
-## The `export_name` attribute
+## `export_name`属性
 
-The *`export_name` attribute* specifies the name of the symbol that will be
-exported on a [function] or [static]. It uses the [_MetaNameValueStr_] syntax
-to specify the symbol name.
+*`export_name`属性*指定将在[函数][function]或[静态项][static]上导出的符号的名称。它使用 [_MetaNameValueStr_]元项属性句法指定符号名。
 
 ```rust
 #[export_name = "exported_symbol_name"]
@@ -98,3 +88,6 @@ pub fn name_in_rust() { }
 [function]: items/functions.md
 [item]: items.md
 [static]: items/static-items.md
+
+<!-- 2021-1-16-->
+<!-- checked -->

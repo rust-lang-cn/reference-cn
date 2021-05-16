@@ -1,6 +1,10 @@
-# Enumerations
+# 枚举
 
-> **<sup>Syntax</sup>**\
+>[enumerations.md](https://github.com/rust-lang/reference/blob/master/src/items/enumerations.md)\
+>commit: d8cbe4eedb77bae3db9eff87b1238e7e23f6ae92 \
+>本章译文最后维护日期：2021-2-21
+
+> **<sup>句法</sup>**\
 > _Enumeration_ :\
 > &nbsp;&nbsp; `enum`
 >    [IDENTIFIER]&nbsp;
@@ -25,13 +29,11 @@
 > _EnumItemDiscriminant_ :\
 > &nbsp;&nbsp; `=` [_Expression_]
 
-An *enumeration*, also referred to as an *enum*, is a simultaneous definition of a
-nominal [enumerated type] as well as a set of *constructors*, that can be used
-to create or pattern-match values of the corresponding enumerated type.
+*枚举*，英文为 *enumeration*，常见其简写形式 *enum*，它同时定义了一个标称型(nominal)[枚举类型][enumerated type]和一组*构造器*，这可用于创建或使用模式来匹配相应枚举类型的值。
 
-Enumerations are declared with the keyword `enum`.
+枚举使用关键字 `enum` 来声明。
 
-An example of an `enum` item and its use:
+`enum` 程序项的一个示例和它的使用方法：
 
 ```rust
 enum Animal {
@@ -43,7 +45,7 @@ let mut a: Animal = Animal::Dog;
 a = Animal::Cat;
 ```
 
-Enum constructors can have either named or unnamed fields:
+枚举构造器可以带有具名字段或未具名字段：
 
 ```rust
 enum Animal {
@@ -55,23 +57,13 @@ let mut a: Animal = Animal::Dog("Cocoa".to_string(), 37.2);
 a = Animal::Cat { name: "Spotty".to_string(), weight: 2.7 };
 ```
 
-In this example, `Cat` is a _struct-like enum variant_, whereas `Dog` is simply
-called an enum variant. Each enum instance has a _discriminant_ which is an
-integer associated to it that is used to determine which variant it holds. An
-opaque reference to this discriminant can be obtained with the
-[`mem::discriminant`] function.
+在这个例子中，`Cat` 是一个*类结构体枚举变体(struct-like enum variant)*，而 `Dog` 则被简单地称为枚举变体。每个枚举实例都有一个*判别值/判别式(discriminant)*，它是一个与此枚举实例关联的整数，用来确定它持有哪个变体。可以通过 [`mem::discriminant`] 函数来获得对这个判别值的不透明引用。
 
-## Custom Discriminant Values for Fieldless Enumerations
+## 为无字段枚举自定义判别值
 
-If there is no data attached to *any* of the variants of an enumeration,
-then the discriminant can be directly chosen and accessed.
+如果枚举的*任何*变体都没有附加字段，则可以直接设置和访问判别值。
 
-These enumerations can be cast to integer types with the `as` operator by a
-[numeric cast]. The enumeration can optionally specify which integer each
-discriminant gets by following the variant name with `=` followed by a [constant
-expression]. If the first variant in the declaration is unspecified, then it is
-set to zero. For every other unspecified discriminant, it is set to one higher
-than the previous variant in the declaration.
+可以使用操作符 `as` 通过[数值转换][numeric cast]将这些枚举类型转换为整型。枚举可以可选地指定每个判别值的具体值，方法是在变体名后面追加 `=` 和[常量表达式][constant expression]。如果声明中的第一个变体未指定，则将其判别值设置为零。对于其他未指定的判别值，它比照前一个变体的判别值按 1 递增。
 
 ```rust
 enum Foo {
@@ -84,12 +76,9 @@ let baz_discriminant = Foo::Baz as u32;
 assert_eq!(baz_discriminant, 123);
 ```
 
-Under the [default representation], the specified discriminant is interpreted as
-an `isize` value although the compiler is allowed to use a smaller type in the
-actual memory layout. The size and thus acceptable values can be changed by
-using a [primitive representation] or the [`C` representation].
+尽管编译器被允许在实际的内存布局中使用较小的类型，但在[默认表形(default representation)][default representation]下，指定的判别值会被解释为一个 `isize` 值。也可以使用[原语表形(primitive representation)]或[`C`表形][`C` representation]来更改成大小可接受的值。
 
-It is an error when two variants share the same discriminant.
+同一枚举中，两个变体使用相同的判别值是错误的。
 
 ```rust,compile_fail
 enum SharedDiscriminantError {
@@ -100,51 +89,46 @@ enum SharedDiscriminantError {
 enum SharedDiscriminantError2 {
     Zero,       // 0
     One,        // 1
-    OneToo = 1  // 1 (collision with previous!)
+    OneToo = 1  // 1 (和前值冲突！)
 }
 ```
 
-It is also an error to have an unspecified discriminant where the previous
-discriminant is the maximum value for the size of the discriminant.
+当前一个变体的判别值是当前表形允许的的最大值时，再使用默认判别值就也是错误的。
 
 ```rust,compile_fail
 #[repr(u8)]
 enum OverflowingDiscriminantError {
     Max = 255,
-    MaxPlusOne // Would be 256, but that overflows the enum.
+    MaxPlusOne // 应该是256，但枚举溢出了
 }
 
 #[repr(u8)]
 enum OverflowingDiscriminantError2 {
     MaxMinusOne = 254, // 254
     Max,               // 255
-    MaxPlusOne         // Would be 256, but that overflows the enum.
+    MaxPlusOne         // 应该是256，但枚举溢出了。
 }
 ```
 
-## Zero-variant Enums
+## 无变体枚举
 
-Enums with zero variants are known as *zero-variant enums*. As they have
-no valid values, they cannot be instantiated.
+没有变体的枚举称为*零变体枚举/无变体枚举*。因为它们没有有效的值，所以不能被实例化。
 
 ```rust
 enum ZeroVariants {}
 ```
 
-Zero-variant enums are equivalent to the [never type], but they cannot be
-coerced into other types.
+零变体枚举与 [*never类型*][never type]等效，但它不能被强转为其他类型。
 
 ```rust,compile_fail
 # enum ZeroVariants {}
 let x: ZeroVariants = panic!();
-let y: u32 = x; // mismatched type error
+let y: u32 = x; // 类型不匹配错误
 ```
 
-## Variant visibility
+## 变体的可见性
 
-Enum variants syntactically allow a [_Visibility_] annotation, but this is
-rejected when the enum is validated. This allows items to be parsed with a
-unified syntax across different contexts where they are used.
+依照句法规则，枚举变体是允许有自己的[*可见性(visibility)*][Visibility]限定/注解(annotation)的，但当枚举被（句法分析程序）验证(validate)通过后，可见性注解又被弃用。因此，在源码解析层面，允许跨不同的上下文对其中不同类型的程序项使用统一的句法规则进行解析。
 
 ```rust
 macro_rules! mac_variant {
@@ -159,10 +143,10 @@ macro_rules! mac_variant {
     }
 }
 
-// Empty `vis` is allowed.
+// 允许空 `vis`.
 mac_variant! { E }
 
-// This is allowed, since it is removed before being validated.
+// 这种也行，因为这段代码在被验证通过前会被移除。
 #[cfg(FALSE)]
 enum E {
     pub U,
@@ -179,7 +163,7 @@ enum E {
 [_StructFields_]: structs.md
 [_Visibility_]: ../visibility-and-privacy.md
 [enumerated type]: ../types/enum.md
-[`mem::discriminant`]: ../../std/mem/fn.discriminant.html
+[`mem::discriminant`]: https://doc.rust-lang.org/std/mem/fn.discriminant.html
 [never type]: ../types/never.md
 [numeric cast]: ../expressions/operator-expr.md#semantics
 [constant expression]: ../const_eval.md#constant-expressions

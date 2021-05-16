@@ -1,50 +1,44 @@
-# Boolean type
+# 布尔型
+
+>[boolean.md](https://github.com/rust-lang/reference/blob/master/src/types/boolean.md)\
+>commit: 1804726424c5cbc97f3d9d4adf6236980e2ff7a1 \
+>本章译文最后维护日期：2021-2-10
 
 ```rust
 let b: bool = true;
 ```
 
-The *boolean type* or *bool* is a primitive data type that can take on one of
-two values, called *true* and *false*.
+*布尔型*或*布尔数*是一种可以为*真(`true`)*或*假(`false`)*的原语数据类型。
 
-Values of this type may be created using a [literal expression] using the
-keywords `true` and `false` corresponding to the value of the same name.
+这种类型的值可以使用[字面量表达式][literal expression]创建，使用关键字 `true` 和 `false` 来表达对应名称的值。
 
-This type is a part of the [language prelude] with the [name] `bool`.
+该类型是此[语言的预导入包][language prelude]的一部分，使用[名称][name] `bool` 来表示。
 
-An object with the boolean type has a [size and alignment] of 1 each. The
-value false has the bit pattern `0x00` and the value true has the bit pattern
-`0x01`. It is [undefined behavior] for an object with the boolean type to have
-any other bit pattern.
+布尔型的对象[尺寸和对齐量][size and alignment]均为1。false 的位模式为 `0x00`， true 的位模式为 `0x01`。其他的任何其他位模式的布尔型的象都是[未定义的行为][undefined behavior]。
 
-The boolean type is the type of many operands in various [expressions]:
+布尔型是多种[表达式][expressions]的操作数的类型:
 
-* The condition operand in [if expressions] and [while expressions]
-* The operands in [lazy boolean operator expressions][lazy]
+* [if表达式][if expressions]和 [while表达式][while expressions]中的条件操作数
+* [惰性布尔运算表达式][lazy]的操作数
 
-> **Note**: The boolean type acts similarly to but is not an [enumerated type].
-In practice, this mostly means that constructors are not associated to the type
-(e.g. `bool::true`).
+> **注意**：布尔型的行为类似于[枚举类型][enumerated type]，但它确实不是枚举类型。在实践中，这主要意味着构造函数不与类型相关联（例如没有 `bool::true` 这种写法）。
 
-Like all primitives, the boolean type [implements][p-impl] the
-[traits][p-traits] [`Clone`][p-clone], [`Copy`][p-copy], [`Sized`][p-sized],
-[`Send`][p-send], and [`Sync`][p-sync].
+和其他所有的原语类型一样，布尔型[实现][p-impl]了 [`Clone`][p-clone]、[`Copy`][p-copy]、[`Sized`][p-sized]、[`Send`][p-send] 和 [`Sync`][p-sync] 这些 [traits][p-traits]。
 
-> **Note**: See the [standard library docs][std] for library operations.
+> **注意**: 参见[标准库文档][std]中的相关操作运算。
 
-## Operations on boolean values
+## 布尔运算
 
-<!-- This is washy wording --> When using certain operator expressions with a
-boolean type for its operands, they evaluate using the rules of [boolean logic].
+<!-- 这是一种模棱两可的措辞 --> 当使用带有布尔型的操作数的特定操作符表达式时，它们使用[布尔逻辑规则][boolean logic]进行计算。
 
-### Logical not
+### 逻辑非
 
 | `b` | [`!b`][op-not] |
 |- | - |
 | `true` | `false` |
 | `false` | `true` |
 
-### Logical or
+### 逻辑或
 
 | `a` | `b` | [<code>a &#124; b</code>][op-or] |
 |- | - | - |
@@ -53,7 +47,7 @@ boolean type for its operands, they evaluate using the rules of [boolean logic].
 | `false` | `true` | `true` |
 | `false` | `false` | `false` |
 
-### Logical and
+### 逻辑与
 
 | `a` | `b` | [`a & b`][op-and] |
 |- | - | - |
@@ -62,7 +56,7 @@ boolean type for its operands, they evaluate using the rules of [boolean logic].
 | `false` | `true` | `false` |
 | `false` | `false` | `false` |
 
-### Logical xor
+### 逻辑异或
 
 | `a` | `b` | [`a ^ b`][op-xor] |
 |- | - | - |
@@ -71,7 +65,7 @@ boolean type for its operands, they evaluate using the rules of [boolean logic].
 | `false` | `true` | `true` |
 | `false` | `false` | `false` |
 
-### Comparisons
+### 比较
 
 | `a` | `b` | [`a == b`][op-compare] |
 |- | - | - |
@@ -87,10 +81,10 @@ boolean type for its operands, they evaluate using the rules of [boolean logic].
 | `false` | `true` | `false` |
 | `false` | `false` | `false` |
 
-* `a != b` is the same as `!(a == b)`
-* `a >= b` is the same as `a == b | a > b`
-* `a < b` is the same as `!(a >= b)`
-* `a <= b` is the same as `a == b | a < b`
+* `a != b` 等同于 `!(a == b)`
+* `a >= b` 等同于 `a == b | a > b`
+* `a < b` 等同于 `!(a >= b)`
+* `a <= b` 等同于 `a == b | a < b`
 
 [boolean logic]: https://en.wikipedia.org/wiki/Boolean_algebra
 [enumerated type]: enum.md

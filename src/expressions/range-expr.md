@@ -1,6 +1,10 @@
-# Range expressions
+# 区间表达式
 
-> **<sup>Syntax</sup>**\
+>[range-expr.md](https://github.com/rust-lang/reference/blob/master/src/expressions/range-expr.md)\
+>commit: eb5290329316e96c48c032075f7dbfa56990702b \
+>本章译文最后维护日期：2021-02-21
+
+> **<sup>句法</sup>**\
 > _RangeExpression_ :\
 > &nbsp;&nbsp; &nbsp;&nbsp; _RangeExpr_\
 > &nbsp;&nbsp; | _RangeFromExpr_\
@@ -27,9 +31,9 @@
 > _RangeToInclusiveExpr_ :\
 > &nbsp;&nbsp; `..=` [_Expression_]
 
-The `..` and `..=` operators will construct an object of one of the `std::ops::Range` (or `core::ops::Range`) variants, according to the following table:
+`..` 和 `..=` 操作符会根据下表中的规则构造 `std::ops::Range`（或 `core::ops::Range`）的某一变体类型的对象：
 
-| Production             | Syntax        | Type                         | Range                 |
+| 产生式/句法规则           | 句法          | 类型                          | 区间语义              |
 |------------------------|---------------|------------------------------|-----------------------|
 | _RangeExpr_            | start`..`end  | [std::ops::Range]            | start &le; x &lt; end |
 | _RangeFromExpr_        | start`..`     | [std::ops::RangeFrom]        | start &le; x          |
@@ -38,7 +42,7 @@ The `..` and `..=` operators will construct an object of one of the `std::ops::R
 | _RangeInclusiveExpr_   | start`..=`end | [std::ops::RangeInclusive]   | start &le; x &le; end |
 | _RangeToInclusiveExpr_ | `..=`end      | [std::ops::RangeToInclusive] |            x &le; end |
 
-Examples:
+举例：
 
 ```rust
 1..2;   // std::ops::Range
@@ -49,7 +53,7 @@ Examples:
 ..=7;   // std::ops::RangeToInclusive
 ```
 
-The following expressions are equivalent.
+下面的表达式是等价的。
 
 ```rust
 let x = std::ops::Range {start: 0, end: 10};
@@ -58,7 +62,7 @@ let y = 0..10;
 assert_eq!(x, y);
 ```
 
-Ranges can be used in `for` loops:
+区间能在 `for`循环里使用：
 
 ```rust
 for i in 1..11 {
@@ -74,3 +78,6 @@ for i in 1..11 {
 [std::ops::RangeFull]: https://doc.rust-lang.org/std/ops/struct.RangeFull.html
 [std::ops::RangeInclusive]: https://doc.rust-lang.org/std/ops/struct.RangeInclusive.html
 [std::ops::RangeToInclusive]: https://doc.rust-lang.org/std/ops/struct.RangeToInclusive.html
+
+<!-- 2020-11-12-->
+<!-- checked -->

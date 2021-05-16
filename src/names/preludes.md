@@ -1,131 +1,95 @@
-# Preludes
+# 预导入包
 
-A *prelude* is a collection of names that are automatically brought into scope
-of every module in a crate.
+>[use-declarations.md](https://github.com/rust-lang/reference/blob/master/src/names/preludes.md)\
+>commit: 0ce54e64e3c98d99862485c57087d0ab36f40ef0 \
+>本章译文最后维护日期：2021-1-24
 
-These prelude names are not part of the module itself, they are implicitly
-queried during [name resolution]. For example, even though something like
-[`Box`] is in scope in every module, you cannot refer to it as `self::Box`
-because it is not a member of the current module.
+*预导入包*是一组名称的集合，它会自动把这些名称导入到 crate 中的每个模块的作用域中。
 
-There are several different preludes:
+预导入包中的那些名称不是当前模块本身的一部分，它们在[名称解析][name resolution]期间被隐式导入。例如，即使像 [`Box`] 这样在每个模块的作用域中到处使用的名称，你也不能通过 `self::Box` 来引用它，因为它不是当前模块的成员。
 
-- [Standard library prelude]
-- [Extern prelude]
-- [Language prelude]
-- [`macro_use` prelude]
-- [Tool prelude]
+有几个不同的预导入包：
 
-## Standard library prelude
+- [标准库预导入包][Standard library prelude]
+- [外部预导入包][Extern prelude]
+- [语言预导入包][Language prelude]
+- [`macro_use`预导入包][`macro_use` prelude]
+- [工具类预导入包][Tool prelude]
 
-The standard library prelude includes names from the [`std::prelude::v1`]
-module. If the [`no_std` attribute] is used, then it instead uses the names
-from the [`core::prelude::v1`] module.
+## 标准库预导入包
 
-## Extern prelude
+标准库预导入包包含了 [`std::prelude::v1`]模块中的名称。如果使用[`no_std`属性][`no_std` attribute]，那么它将使用[`core::prelude::v1`]模块中的名称。
 
-External crates imported with [`extern crate`] in the root module or provided
-to the compiler (as with the `--extern` flag with `rustc`) are added to the
-*extern prelude*. If imported with an alias such as `extern crate orig_name as
-new_name`, then the symbol `new_name` is instead added to the prelude.
+## 外部预导入包
 
-The [`core`] crate is always added to the extern prelude. The [`std`] crate is
-added as long as the [`no_std` attribute] is not specified in the crate root.
+在根模块中使用 [`extern crate`] 导入的外部crate 或直接给编译器提供的的外部crate（也就是在 `rustc`命令下使用 `--extern`命令行参数选项）会被添加到*外部预导入包*中。如果使用 `extern crate orig_name as new_name` 这类别名导入，则符号 `new_name` 将被添加到此预导入包。
 
-> **Edition Differences**: In the 2015 edition, crates in the extern prelude
-> cannot be referenced via [use declarations], so it is generally standard
-> practice to include `extern crate` declarations to bring them into scope.
->
-> Beginning in the 2018 edition, [use declarations] can reference crates in
-> the extern prelude, so it is considered unidiomatic to use `extern crate`.
+[`core`] crate 总是会被添加到外部预导入包中。只要 [`no_std`属性][`no_std` attribute]没有在 crate根模块中指定，那么[`std`] crate 就会被添加进来
 
-> **Note**: Additional crates that ship with `rustc`, such as [`alloc`], and
-> [`test`], are not automatically included with the `--extern` flag when using
-> Cargo. They must be brought into scope with an `extern crate` declaration,
-> even in the 2018 edition.
+> **版本差异**：在 2015 版中，在外部预导入包中的 crate 不能通过 [use声明][use declarations]来直接引用，因此通常标准做法是用 `extern crate` 将那它们纳入到当前作用域。
+> 
+> 从 2018 版开始， [use声明][use declarations]可以直接引用外部预导入包里的 crate，所以再在代码里使用 `extern crate` 就会被认为是不规范的。
+
+> **注意**: 随 `rustc` 一起引入的 crate，如 [`alloc`] 和 [`test`]，在使用 Cargo 时不会自动被包含在 `--extern` 命令行参数选项中。即使在 2018 版中，也必须通过外部crate(`extern crate`)声明来把它们引入到当前作用域内。
 >
 > ```rust
 > extern crate alloc;
 > use alloc::rc::Rc;
 > ```
 >
-> Cargo does bring in `proc_macro` to the extern prelude for proc-macro crates
-> only.
-
+> Cargo却会将 `proc_macro` 带入到编译类型为 proc-macro 的 crate 的外部预导入包中
+> 
 <!--
-See https://github.com/rust-lang/rust/issues/57288 for more about the
-alloc/test limitation.
+查看 https://github.com/rust-lang/rust/issues/57288 以了解更多关于 alloc/test 的限制。
 -->
 
-### The `no_std` attribute
+### `no_std`属性
 
-By default, the standard library is automatically included in the crate root
-module. The [`std`] crate is added to the root, along with an implicit
-[`macro_use` attribute] pulling in all macros exported from `std` into the
-[`macro_use` prelude]. Both [`core`] and [`std`] are added to the [extern
-prelude]. The [standard library prelude] includes everything from the
-[`std::prelude::v1`] module.
+默认情况下，标准库自动包含在 crate根模块中。在 [`std`] crate 被添加到根模块中的同时，还会隐式生效一个 [`macro_use`属性][`macro_use` attribute]，它将所有从 `std` 中导出的宏放入到[`macro_use`预导入包][`macro_use` prelude]中。默认情况下，[`core`] 和 [`std`] 都被添加到[外部预导入包][extern prelude]中。[标准库预导入包][standard library prelude]包含了 [`std::prelude::v1`]模块中的所有内容。
 
-The *`no_std` [attribute]* may be applied at the crate level to prevent the
-[`std`] crate from being automatically added into scope. It does three things:
+*`no_std`[属性][attribute]*可以应用在 crate 级别上，用来防止 [`std`] crate 被自动添加到相关作用域内。此属性作了如下三件事：
 
-* Prevents `std` from being added to the [extern prelude](#extern-prelude).
-* Uses [`core::prelude::v1`] in the [standard library prelude] instead of
-  [`std::prelude::v1`].
-* Injects the [`core`] crate into the crate root instead of [`std`], and pulls
-  in all macros exported from `core` in the [`macro_use` prelude].
+* 阻止 `std` crate 被添加进[外部预导入包](#extern-prelude)。
+* 使用[标准库预导入包][standard library prelude]中的 [`core::prelude::v1`] 来替代默认情况下导入的 [`std::prelude::v1`]。
+* 使用 [`core`] crate 替代 [`std`] crate 来注入到当前 crate 的根模块中，同时把 `core` crate下的所有宏导入到 [`macro_use`预导入包][`macro_use` prelude]中。
 
-> **Note**: Using the core prelude over the standard prelude is useful when
-> either the crate is targeting a platform that does not support the standard
-> library or is purposefully not using the capabilities of the standard
-> library. Those capabilities are mainly dynamic memory allocation (e.g. `Box`
-> and `Vec`) and file and network capabilities (e.g. `std::fs` and `std::io`).
+> **注意**：当 crate 的目标平台不支持标准库或者故意不使用标准库的功能时，使用核心预导入包而不是标准预导入包是很有用的。此时没有导入的标准库的那些功能主要是动态内存分配（例如：`Box`和' `Vec`）和文件，以及网络功能（例如：`std::fs` 和 `std::io`）。
 
 <div class="warning">
 
-Warning: Using `no_std` does not prevent the standard library from being
-linked in. It is still valid to put `extern crate std;` into the crate and
-dependencies can also link it in.
+警告：使用 `no_std` 并不会阻止标准库被链接进来。使用 `extern crate std;` 将 `std` crate 导入仍然有效，相关的依赖项也可以被正常链接进来。
 
 </div>
 
-## Language prelude
+## 语言预导入包
 
-The language prelude includes names of types and attributes that are built-in
-to the language. The language prelude is always in scope. It includes the following:
+语言预导入包包括语言内置的类型名称和属性名称。语言预导入包总是在当前作用域内有效的。它包括以下内容：
 
-* [Type namespace]
-    * [Boolean type] — `bool`
-    * [Textual types] — `char` and `str`
-    * [Integer types] — `i8`, `i16`, `i32`, `i64`, `i128`, `u8`, `u16`, `u32`, `u64`, `u128`
-    * [Machine-dependent integer types] — `usize` and `isize`
-    * [floating-point types] — `f32` and `f64`
-* [Macro namespace]
-    * [Built-in attributes]
+* [类型命名空间][Type namespace]
+    * [布尔型][Boolean type] — `bool`
+    * [文本型][Textual types] — `char` 和 `str`
+    * [整型][Integer types] — `i8`, `i16`, `i32`, `i64`, `i128`, `u8`, `u16`, `u32`, `u64`, `u128`
+    * [和机器平台相关的整型][Machine-dependent integer types] — `usize` 和 `isize`
+    * [浮点型][floating-point types] — `f32` 和 `f64`
+* [宏命名空间][Macro namespace]
+    * [内置属性][Built-in attributes]
 
-## `macro_use` prelude
+## `macro_use`预导入包
 
-The `macro_use` prelude includes macros from external crates that were
-imported by the [`macro_use` attribute] applied to an [`extern crate`].
+`macro_use`预导入包包含了外部crate 中的宏，这些宏是通过在当前文档源码内部的 [`extern crate`] 声明语句上应用 [`macro_use`属性][`macro_use` attribute]来导入此声明中的 crate 内部的宏。
 
-## Tool prelude
+## 工具类预导入包
 
-The tool prelude includes tool names for external tools in the [type
-namespace]. See the [tool attributes] section for more details.
+工具类预导入包包含了在[类型命名空间][type namespace]中声明的外部工具的工具名称。请参阅[工具类属性][tool attributes]一节，以了解更多细节。
 
-## The `no_implicit_prelude` attribute
+## `no_implicit_prelude`属性
 
-The *`no_implicit_prelude` [attribute]* may be applied at the crate level or
-on a module to indicate that it should not automatically bring the [standard
-library prelude], [extern prelude], or [tool prelude] into scope for that
-module or any of its descendants.
+*`no_implicit_prelude`[属性][attribute]*可以应用在 crate级别或模块上，用以指示它不应该自动将[标准库预导入包][standard library prelude]、[外部预导入包][extern prelude]或[工具类预导入包][tool prelude]引入到当前模块或其任何子模块的作用域中。
 
-This attribute does not affect the [language prelude].
+此属性不影响[语言预导入包][language prelude]。
 
-> **Edition Differences**: In the 2015 edition, the `no_implicit_prelude`
-> attribute does not affect the [`macro_use` prelude], and all macros exported
-> from the standard library are still included in the `macro_use` prelude.
-> Starting in the 2018 edition, it will remove the `macro_use` prelude.
+> **版本差异**: 在 2015版中，`no_implicit_prelude`属性不会影响[`macro_use`预导入包][`macro_use` prelude]，从标准库导出的所有宏仍然包含在 `macro_use`预导入包中。从 2018版开始，它也会禁止 `macro_use`预导入包生效。
+
 
 [`alloc`]: ../../alloc/index.html
 [`Box`]: ../../std/boxed/struct.Box.html

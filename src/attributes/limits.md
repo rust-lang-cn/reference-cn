@@ -1,15 +1,16 @@
-# Limits
+# 极值设置
 
-The following [attributes] affect compile-time limits.
+>[limits.md](https://github.com/rust-lang/reference/blob/master/src/attributes/limits.md)\
+>commit: e7208a29f943e986c815734282c5cc5fd30f4708 \
+>本章译文最后维护日期：2021-3-26
 
-## The `recursion_limit` attribute
+以下[属性][attributes]影响部分编译期参数的极限值设置。
 
-The *`recursion_limit` attribute* may be applied at the [crate] level to set the
-maximum depth for potentially infinitely-recursive compile-time operations
-like macro expansion or auto-dereference. It uses the [_MetaNameValueStr_]
-syntax to specify the recursion depth.
+## `recursion_limit`属性
 
-> Note: The default in `rustc` is 128.
+*`recursion_limit`属性*可以应用于 [crate] 级别，为可能无限递归的编译期操作（如宏扩展或自动解引用）设置最大递归深度。它使用 [_MetaNameValueStr_]元项属性句法来指定递归深度。
+
+> 注意：`rustc` 中这个参数的默认值是128。
 
 ```rust,compile_fail
 #![recursion_limit = "4"]
@@ -22,38 +23,31 @@ macro_rules! a {
     (4) => { };
 }
 
-// This fails to expand because it requires a recursion depth greater than 4.
+// 这无法扩展，因为它需要大于4的递归深度。
 a!{}
 ```
 
 ```rust,compile_fail
 #![recursion_limit = "1"]
 
-// This fails because it requires two recursive steps to auto-dereference.
+// 这里的失败是因为需要两个递归步骤来自动解引用
 (|_: &u8| {})(&&&1);
 ```
 
-## The `type_length_limit` attribute
+## `type_length_limit`属性
 
-The *`type_length_limit` attribute* limits the maximum number of type
-substitutions made when constructing a concrete type during monomorphization.
-It is applied at the [crate] level, and uses the [_MetaNameValueStr_] syntax
-to set the limit based on the number of type substitutions.
+*`type_length_limit`属性*限制在单态化过程中构造具体类型时所做的最大类型替换次数。它应用于 [crate] 级别，并使用 [_MetaNameValueStr_]元项属性句法来设置类型替换数量的上限。
 
-> Note: The default in `rustc` is 1048576.
+> 注意：`rustc` 中这个参数的默认值是 1048576。
 
-<!-- This code should fail to compile. Unfortunately rustdoc's `compile_fail`
-     stops after analysis phase, and this error is generated after that. So
-     this needs to be `ignore` for now. -->
+<!-- This code should fail to compile. Unfortunately rustdoc's `compile_fail` stops after analysis phase, and this error is generated after that. So this needs to be `ignore` for now. -->
 
 ```rust,compile_fail,ignore
 #![type_length_limit = "8"]
 
 fn f<T>(x: T) {}
 
-// This fails to compile because monomorphizing to
-// `f::<(i32, i32, i32, i32, i32, i32, i32, i32, i32)>>` requires more
-// than 8 type elements.
+// 这里的编译失败是因为单态化 `f::<(i32, i32, i32, i32, i32, i32, i32, i32, i32)>>` 需要大于8个类型元素。
 f((1, 2, 3, 4, 5, 6, 7, 8, 9));
 ```
 
