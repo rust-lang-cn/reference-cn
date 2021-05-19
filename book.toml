@@ -1,5 +1,6 @@
 [book]
-title = "Rust 参考手册"
+title = "Rust 参考手册 中文版"
+description = "Rust 参考手册是 Rust 官方编写的 Rust 语言规范手册，由于语言还在快速迭代当中，所以本手册的内容还未固定下来。但这是一本学习和了解 Rust 全面的语言特性必不可少的书籍。"
 author = "The Rust Project Developers"
 translator = "rust-lang-cn, zzy"
 
