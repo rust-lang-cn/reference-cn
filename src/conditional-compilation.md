@@ -26,7 +26,7 @@
 > _ConfigurationPredicateList_\
 > &nbsp;&nbsp; _ConfigurationPredicate_ (`,` _ConfigurationPredicate_)<sup>\*</sup> `,`<sup>?</sup>
 
-根据某些条件，<!-- 这个定义有点空洞 --> *条件性编译的源代码(Conditionally compiled source code)*可以被认为是 crate 源代码的一部分，也可以不被认为是 crate 源代码的一部分。可以使用[属性][attributes] [`cfg`] 和 [`cfg_attr`] 以及内置的 [`cfg` macro] 来有条件地对源代码进行编译。这些条件可以基于被编译的 crate 的目标架构、传递给编译器的值，以及下面将详细描述的一些其他事项。
+根据某些条件，<!-- 这个定义有点空洞 --> *条件性编译的源代码(Conditionally compiled source code)* 可以被认为是 crate 源代码的一部分，也可以不被认为是 crate 源代码的一部分。可以使用[属性][attributes] [`cfg`] 和 [`cfg_attr`] 以及内置的 [`cfg` macro] 来有条件地对源代码进行编译。这些条件可以基于被编译的 crate 的目标架构、传递给编译器的值，以及下面将详细描述的一些其他事项。
 
 每种形式的编译条件都有一个计算结果为真或假的*配置谓词(configuration predicate)*。谓词是以下内容之一：
 
