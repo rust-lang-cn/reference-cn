@@ -6,7 +6,7 @@
 
 本节介绍影响 crate 编译输出的 ABI 的各种特性。
 
-有关为导出函数(exporting functions)指定 ABI 的信息，请参阅[*外部函数*][extern functions]。参阅[*外部块*]][external blocks]了解关于指定 ABI 来链接外部库的信息。
+有关为导出函数(exporting functions)指定 ABI 的信息，请参阅(*外部函数*)[extern functions]。参阅(*外部块*)[external blocks]了解关于指定 ABI 来链接外部库的信息。
 
 ## `used`属性
 

@@ -26,7 +26,7 @@ fn main() {
     });
 
     let mut bad = false;
-    if let Err(e) = check_directory(&Path::new(&arg), &mut bad) {
+    if let Err(e) = check_directory(Path::new(&arg), &mut bad) {
         eprintln!("error: {}", e);
         std::process::exit(1);
     }
@@ -74,7 +74,7 @@ fn check_directory(dir: &Path, bad: &mut bool) -> Result<(), Box<dyn Error>> {
         }
         for (num, line) in contents.lines().enumerate() {
             if line.ends_with(' ') {
-                line_error!(bad, path, num + 1, "lines must not end with spaces");                
+                line_error!(bad, path, num + 1, "lines must not end with spaces");
             }
         }
         cmark_check(&path, bad, &contents)?;
